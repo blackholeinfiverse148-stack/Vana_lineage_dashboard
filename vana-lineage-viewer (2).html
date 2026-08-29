@@ -346,8 +346,11 @@
     <label style="padding-top:7px">Group 3 evidence pack</label>
     <textarea id="evidencePackJson" placeholder='Paste Group 3&#39;s field_applicability evidence pack JSON here (e.g. SOURCE_EVIDENCE_PACK_EMITTED_*.json) to correctly distinguish "not applicable" from "genuine gap" for external_api observations.' style="min-height:70px"></textarea>
   </div>
-  <button class="btn secondary" onclick="loadEvidencePack()">Load evidence pack</button>
-  <span style="font-size:11.5px;color:var(--ink-soft)">Without this, external_api observations use Group 3's documented defaults for gnss_status, position_accuracy, calibration_state, accuracy, and hardware_verified.</span>
+  <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;">
+    <button class="btn secondary" onclick="loadEvidencePack()">Load evidence pack</button>
+    <span id="evidencePackStatus" style="font-size:12px; font-weight:600;"></span>
+  </div>
+  <span style="font-size:11.5px;color:var(--ink-soft);display:block;margin-top:4px;">Without this, external_api observations use Group 3's documented defaults for gnss_status, position_accuracy, calibration_state, accuracy, and hardware_verified.</span>
 </div>
 
 <div class="rail" id="rail"></div>
@@ -1160,12 +1163,29 @@ function loadDemo(){
 
 function loadEvidencePack(){
   const raw = document.getElementById('evidencePackJson').value.trim();
+  const statusEl = document.getElementById('evidencePackStatus');
   if(!raw){
     evidencePack = null;
+    if(statusEl){
+      statusEl.style.color = 'var(--ink-soft)';
+      statusEl.textContent = 'Evidence pack cleared (reverting to system defaults).';
+    }
+    console.log('[VANA UI] Evidence pack cleared.');
   } else {
     try{
       evidencePack = JSON.parse(raw);
+      const fieldsCount = evidencePack.field_applicability ? Object.keys(evidencePack.field_applicability).length : 0;
+      const packId = evidencePack.evidence_pack_id || evidencePack.pack_id || 'custom pack';
+      if(statusEl){
+        statusEl.style.color = 'var(--live)';
+        statusEl.textContent = `✓ Evidence pack loaded: ${packId} (${fieldsCount} field rules applied)`;
+      }
+      console.log('[VANA UI] Evidence Pack loaded successfully:', evidencePack);
     }catch(e){
+      if(statusEl){
+        statusEl.style.color = 'var(--blocked)';
+        statusEl.textContent = '✗ JSON parse error: ' + e.message;
+      }
       alert('Could not parse evidence pack JSON: ' + e.message);
       return;
     }
