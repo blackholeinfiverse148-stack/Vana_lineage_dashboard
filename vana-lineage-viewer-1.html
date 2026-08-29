@@ -184,7 +184,13 @@
   .legend h3{font-size:13px; margin:0 0 10px;}
   .legend .items{display:flex; flex-wrap:wrap; gap:10px;}
 
+<<<<<<< HEAD
   /* system/service health & browser status strips */
+=======
+  /* system/service health — deliberately square + neutral, never shares
+     the pill/color language of evidence badges, so uptime can't be
+     mistaken for an evidence classification */
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   .health-strip{max-width:920px; margin:14px auto 0; padding:0 20px; display:flex; gap:8px; flex-wrap:wrap;}
   .health-chip{
     display:flex; align-items:center; gap:6px; padding:5px 10px; border-radius:4px;
@@ -193,7 +199,10 @@
   }
   .health-chip .dot{width:6px; height:6px; border-radius:50%; background:var(--na);}
   .health-chip.ok .dot{background:var(--live);}
+<<<<<<< HEAD
   .health-chip.warn .dot{background:var(--controlled);}
+=======
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   .health-chip.down .dot{background:var(--blocked);}
   .health-chip.unknown .dot{background:var(--na);}
 
@@ -227,9 +236,13 @@
 </div>
 
 <div class="health-strip" id="healthStrip">
+<<<<<<< HEAD
   <div class="health-chip unknown" id="g1HealthChip"><span class="dot"></span>Group 1 API: not checked</div>
   <div class="health-chip unknown" id="g2HealthChip"><span class="dot"></span>Group 2 API: not checked</div>
   <div class="health-chip unknown" id="g4HealthChip"><span class="dot"></span>Group 4 API: not checked</div>
+=======
+  <div class="health-chip unknown" id="g1HealthChip"><span class="dot"></span>Group 1 service: not checked</div>
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 </div>
 
 <header class="page">
@@ -239,18 +252,31 @@
 
 <div class="source-panel">
   <div class="tabbar">
+<<<<<<< HEAD
     <div class="tab active" id="tabLive" onclick="setMode('live')" role="button" tabindex="0">Connect live APIs</div>
     <div class="tab" id="tabDemo" onclick="setMode('demo')" role="button" tabindex="0">Paste sample payload</div>
+=======
+    <div class="tab active" id="tabLive" onclick="setMode('live')">Connect live APIs</div>
+    <div class="tab" id="tabDemo" onclick="setMode('demo')">Paste sample payload</div>
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   </div>
 
   <div id="liveInputs">
     <div class="row"><label>Group 1 base URL</label><input id="g1url" value="http://163.128.209.18:8013" placeholder="Group 1 Observation API"></div>
     <div class="row"><label>Group 2 endpoint</label><input id="g2url" value="https://niyantran.blackholeinfiverse.com/api/group2/context/resolve" placeholder="Group 2 Context resolve (POST)"></div>
+<<<<<<< HEAD
     <div class="row"><label>Group 3 base URL</label><input id="g3url" placeholder="Group 3 Observation/Provenance API (integrated via Group 1 retrieval)"></div>
     <div class="row"><label>Group 4 endpoint</label><input id="g4url" value="http://163.128.209.18:8010/vana/execute" placeholder="Group 4 VANA Execute (POST)"></div>
     <div class="row"><label>Observation ID</label><input id="oidInput" value="TC-Z03-EXT-OPENMETEO-OBS001"></div>
     <button class="btn" id="btnFetchLive" onclick="fetchLive()">Fetch from live APIs</button>
     <span style="font-size:11.5px;color:var(--ink-soft)">Direct HTTP calls to deployed Group 1, Group 2, and Group 4 runtimes.</span>
+=======
+    <div class="row"><label>Group 3 base URL</label><input id="g3url" placeholder="Group 3 Observation/Provenance API (not yet provided)"></div>
+    <div class="row"><label>Group 4 base URL</label><input id="g4url" placeholder="Group 4 Action Request API (not yet provided)"></div>
+    <div class="row"><label>Observation ID</label><input id="oidInput" value="TC-Z03-EXT-OPENMETEO-OBS001"></div>
+    <button class="btn" onclick="fetchLive()">Fetch from live APIs</button>
+    <span style="font-size:11.5px;color:var(--ink-soft)">Browser will attempt direct calls. Blocked by CORS/mixed-content? Use "Paste sample payload" instead. Auth headers (if any) are a deployment/gateway concern — none are assumed here.</span>
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   </div>
 
   <div id="demoInputs" style="display:none">
@@ -261,7 +287,11 @@
   "canonical_record_id": "CR-b4615a27-7ab1-4bde-a078-a56fa0f2414c",
   "context_id": null,
   "action_request_id": null,
+<<<<<<< HEAD
   "abstention_record_id": "abstention-f71045f1c36d34de27f585e9",
+=======
+  "abstention_record_id": null,
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   "event_id": null,
   "execution_id": null,
   "trace_id": null,
@@ -272,6 +302,7 @@
     "trace_id": null,
     "idempotency_result": null
   },
+<<<<<<< HEAD
   "group2": {
     "http_status": 200,
     "context_status": null,
@@ -289,11 +320,18 @@
   "group3": {
     "contract_version": "2.2",
     "source_identity": "Open-Meteo.com",
+=======
+  "group2": null,
+  "group3": {
+    "contract_version": "2.2",
+    "source_identity": null,
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
     "survey_id": null,
     "zone_id": null,
     "flight_id": "EXT",
     "sensor_id": null,
     "observation_seq": null,
+<<<<<<< HEAD
     "observation_timestamp": "2026-08-25 11:00:00+00:00",
     "data_state": "CAPTURED",
     "synthetic_state": "CONTROLLED",
@@ -323,6 +361,37 @@
       "captured_at": "2026-08-25 11:00:00+00:00",
       "raw_artifact": "https://api.open-meteo.com/v1/forecast?latitude=19.1288&longitude=72.9421&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&timezone=UTC",
       "provenance_reference": "open-meteo:8d26e68328ac160f"
+=======
+    "observation_timestamp": null,
+    "data_state": null,
+    "synthetic_state": "CONTROLLED",
+    "mission_id": null,
+    "device_id": "G3-EXT-OPENMETEO-01",
+    "location": null,
+    "latitude": null,
+    "longitude": null,
+    "altitude": null,
+    "gnss_status": null,
+    "position_accuracy": null,
+    "observation_type": null,
+    "measurement": null,
+    "unit": null,
+    "quality_state": null,
+    "calibration_state": null,
+    "raw_artifact": null,
+    "raw_artifact_integrity": null,
+    "artifact_type": null,
+    "sha256": null,
+    "accuracy": null,
+    "processing_status": null,
+    "capture_method": "external_api",
+    "provenance": {
+      "device_id": "G3-EXT-OPENMETEO-01",
+      "mission_id": null,
+      "captured_at": null,
+      "raw_artifact": null,
+      "provenance_reference": null
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
     }
   },
   "group4": {
@@ -330,6 +399,7 @@
     "event_type": "GOVERNED_ABSTENTION",
     "ruling": "ABSTAIN",
     "action_eligibility": false,
+<<<<<<< HEAD
     "abstention_required": true,
     "action_request": null,
     "decision_action": "noop",
@@ -338,6 +408,13 @@
   }
 }</textarea>
       <div class="field-note" style="margin-top:6px">Direct payload rendering for offline walkthrough or verification.</div>
+=======
+    "action_request": null,
+    "decision_action": "noop"
+  }
+}</textarea>
+      <div class="field-note" style="margin-top:6px">Only the fields confirmed directly by Group 1/Group 3 for this observation are filled in (contract_version 2.2, flight_id EXT, device_id G3-EXT-OPENMETEO-01, synthetic_state CONTROLLED, capture_method external_api, and the real canonical_record_id). Everything else stays null until the actual GET response is shared — paste it here to replace this scaffold.</div>
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
     </div>
     <button class="btn" onclick="loadDemo()">Render this payload</button>
   </div>
@@ -368,7 +445,11 @@
 </div>
 
 <footer style="max-width:920px; margin:0 auto; padding:18px 20px 32px; border-top:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:11px; color:var(--na);">
+<<<<<<< HEAD
   <span>VANA / Prakriti · Cross-group runtime viewer · Production build</span>
+=======
+  <span>VANA / Prakriti · Cross-group runtime viewer · Internal review build</span>
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   <span>Dashed nodes = stage not yet integrated · Solid nodes = confirmed runtime data</span>
 </footer>
 
@@ -377,6 +458,7 @@ let currentMode = 'live';
 
 function setMode(m){
   currentMode = m;
+<<<<<<< HEAD
   const tabLive = document.getElementById('tabLive');
   const tabDemo = document.getElementById('tabDemo');
   const liveInputs = document.getElementById('liveInputs');
@@ -397,6 +479,12 @@ function setMode(m){
     banner('demo', 'DEMO / SAMPLE MODE ACTIVE — Paste payload and click "Render this payload"');
     console.log('[VANA UI] Mode switched to: DEMO / Sample payload');
   }
+=======
+  document.getElementById('tabLive').classList.toggle('active', m==='live');
+  document.getElementById('tabDemo').classList.toggle('active', m==='demo');
+  document.getElementById('liveInputs').style.display = m==='live' ? 'block':'none';
+  document.getElementById('demoInputs').style.display = m==='demo' ? 'block':'none';
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 }
 
 function banner(kind, text){
@@ -406,17 +494,31 @@ function banner(kind, text){
 }
 
 function fieldVal(v, fallback){
+<<<<<<< HEAD
   if(v === undefined || v === '') {
     return `<span class="v ${fallback==='GAP'?'gap':'pending'}">${fallback || 'NOT VERIFIED'}</span>`;
   }
   if(v === null) {
     if(fallback === 'NOT VERIFIED') return `<span class="v pending">NOT VERIFIED</span>`;
     return `<span class="v mono" style="color:var(--ink-soft)">${fallback !== undefined ? fallback : 'null'}</span>`;
+=======
+  if(v === undefined || v === null || v === '') {
+    return `<span class="v ${fallback==='GAP'?'gap':'pending'}">${fallback}</span>`;
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   }
   return `<span class="v">${v}</span>`;
 }
 
 // ---- Field applicability (Group 3 evidence pack) ----
+<<<<<<< HEAD
+=======
+// NOT_VERIFIED was being used for two different meanings: "structurally does
+// not apply to this observation type" and "applies but genuinely missing."
+// Conflating them tells a viewer a sensor failed when no sensor exists.
+// Group 3's documented defaults for external_api observations (per their
+// evidence pack) are baked in below; a loaded evidence pack JSON overrides
+// them per-field when it provides a field_applicability entry.
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 let evidencePack = null;
 
 const DEFAULT_EXTERNAL_API_APPLICABILITY = {
@@ -442,6 +544,11 @@ function getApplicability(fieldKey, g3f){
   return null;
 }
 
+<<<<<<< HEAD
+=======
+// Renders a field using its applicability classification when one exists,
+// otherwise falls back to the plain NOT VERIFIED convention.
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 function fieldValClassified(fieldKey, value, g3f, fallback){
   const app = getApplicability(fieldKey, g3f);
   const isMissing = (value === undefined || value === null || value === '');
@@ -452,9 +559,20 @@ function fieldValClassified(fieldKey, value, g3f, fallback){
     if(app.category === 'genuine_gap' && isMissing){
       return `<span class="v pending">Not reported by source</span>`;
     }
+<<<<<<< HEAD
     if(app.category === 'declared_gap' && isMissing){
       return `<span class="v declared-gap">DECLARED GAP</span>`;
     }
+=======
+    // declared_gap only applies while the value is actually absent — once a
+    // real artifact/value is present (e.g. future captures with persisted
+    // bytes), it must render normally, not as a stale gap label.
+    if(app.category === 'declared_gap' && isMissing){
+      return `<span class="v declared-gap">DECLARED GAP</span>`;
+    }
+    // true_value — render the actual value normally, including a correct
+    // "false", which is a fact, not a gap.
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
     if(app.category === 'true_value' && !isMissing){
       return `<span class="v">${value}</span>`;
     }
@@ -469,6 +587,7 @@ function badge(state){
   return `<span class="badge ${cls}"><span class="sw"></span>${cls.replace('_',' ')}</span>`;
 }
 
+<<<<<<< HEAD
 function setHealthChip(group, state, detail){
   const chip = document.getElementById(group === 'g4' ? 'g4HealthChip' : (group === 'g2' ? 'g2HealthChip' : 'g1HealthChip'));
   if(!chip) return;
@@ -489,12 +608,33 @@ function setHealthChip(group, state, detail){
   } else {
     chip.classList.add('unknown');
     chip.innerHTML = `<span class="dot"></span>${label}: not checked`;
+=======
+// Service/API health lives in its own strip, visually distinct from evidence
+// badges — this is uptime, never an evidence or origin classification.
+function setHealthChip(state, detail){
+  const chip = document.getElementById('g1HealthChip');
+  if(!chip) return;
+  chip.classList.remove('ok','down','unknown');
+  if(state === 'checking'){
+    chip.classList.add('unknown');
+    chip.innerHTML = '<span class="dot"></span>Group 1 service: checking…';
+  } else if(state === 'ok'){
+    chip.classList.add('ok');
+    chip.innerHTML = `<span class="dot"></span>Group 1 service: ${detail || 'healthy'}`;
+  } else if(state === 'down'){
+    chip.classList.add('down');
+    chip.innerHTML = `<span class="dot"></span>Group 1 service: ${detail || 'down'}`;
+  } else {
+    chip.classList.add('unknown');
+    chip.innerHTML = '<span class="dot"></span>Group 1 service: not checked';
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   }
 }
 
 function nodeCard({group, title, idLabel, idValue, evidenceState, evidenceNote, failed, failReason, fieldsHtml, raw, pending}){
   const rid = 'raw_'+group;
   const stateClass = failed ? 'blocked' : (pending ? 'pending' : '');
+<<<<<<< HEAD
   let idDisplay = `<span class="v pending">NOT VERIFIED</span>`;
   if(idValue !== undefined && idValue !== null){
     idDisplay = `<span class="mono">${idValue}</span>`;
@@ -502,6 +642,8 @@ function nodeCard({group, title, idLabel, idValue, evidenceState, evidenceNote, 
     idDisplay = `<span class="mono" style="color:var(--ink-soft)">null</span>`;
   }
 
+=======
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   return `
   <div class="node ${stateClass}">
     <div class="dot"></div>
@@ -510,14 +652,22 @@ function nodeCard({group, title, idLabel, idValue, evidenceState, evidenceNote, 
         <div>
           <div class="group-tag">${group}</div>
           <div class="stage-title">${title}</div>
+<<<<<<< HEAD
           <div class="id-value"><span style="color:var(--ink-soft)">${idLabel}:</span> ${idDisplay}</div>
+=======
+          <div class="id-value"><span style="color:var(--ink-soft)">${idLabel}:</span> ${idValue ? `<span class="mono">${idValue}</span>` : `<span class="v pending">NOT VERIFIED</span>`}</div>
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
         </div>
         <div style="text-align:right">
           ${badge(evidenceState)}
           ${evidenceNote ? `<div class="field-note">${evidenceNote}</div>` : ''}
         </div>
       </div>
+<<<<<<< HEAD
       ${failed ? `<div class="fail-banner">STAGE FAILED / REJECTED — ${escapeHtml(failReason || 'reason not provided')}</div>` : ''}
+=======
+      ${failed ? `<div class="fail-banner">STAGE FAILED / REJECTED — ${failReason || 'reason not provided'}</div>` : ''}
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
       ${fieldsHtml ? `<div class="field-grid">${fieldsHtml}</div>` : ''}
       ${raw ? `<div class="raw-toggle" onclick="toggleRaw('${rid}')">Show raw response ▾</div><div class="raw" id="${rid}">${escapeHtml(JSON.stringify(raw, null, 2))}</div>` : ''}
     </div>
@@ -528,8 +678,12 @@ function toggleRaw(id){
   document.getElementById(id).classList.toggle('open');
 }
 function escapeHtml(s){
+<<<<<<< HEAD
   if(s === null || s === undefined) return '';
   return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+=======
+  return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 }
 
 function render(data){
@@ -542,10 +696,19 @@ function render(data){
   let html = '';
 
   // ---- Lineage & trace identifiers — consolidated audit strip ----
+<<<<<<< HEAD
   const lineageIds = [
     ['observation_id', data.observation_id],
     ['canonical_record_id', data.canonical_record_id],
     ['context_id', data.context_id === null ? 'null' : data.context_id],
+=======
+  // Every ID here comes straight from the fetched/pasted payload. None are
+  // generated, guessed, or carried over from a previous observation.
+  const lineageIds = [
+    ['observation_id', data.observation_id],
+    ['canonical_record_id', data.canonical_record_id],
+    ['context_id', data.context_id],
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
     ['action_request_id', data.action_request_id],
     ['abstention_record_id', data.abstention_record_id],
     ['event_id', data.event_id],
@@ -555,7 +718,11 @@ function render(data){
     ['lineage_hash', data.lineage_hash],
   ];
   const lineageFieldsHtml = lineageIds.map(([k,v]) =>
+<<<<<<< HEAD
     `<div class="field"><div class="k">${k}</div>${fieldVal(v, v === 'null' ? 'null' : 'NOT VERIFIED')}</div>`
+=======
+    `<div class="field"><div class="k">${k}</div>${fieldVal(v,'NOT VERIFIED')}</div>`
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   ).join('');
   html += `<div class="card" style="margin-bottom:20px;margin-left:64px">
     <div class="group-tag">Cross-group</div>
@@ -563,9 +730,20 @@ function render(data){
     <div class="field-grid">${lineageFieldsHtml}</div>
   </div>`;
 
+<<<<<<< HEAD
   // Group 3 — raw observation & provenance
   const g3f = data.group3 || {};
   const hasG3 = g3f && Object.keys(g3f).length > 0;
+=======
+  // Group 3 — raw observation & provenance (the actual contract-compliant
+  // payload Group 3 emits, before Group 1 generates a canonical record).
+  // Field ownership per Group 3: everything below is what THEY send —
+  // canonical_record_id is explicitly excluded, since Group 3 never sends
+  // or owns it. It arrives via the shared Group 1 retrieval envelope, not
+  // a separate Group 3 endpoint (none exists/is documented yet).
+  const g3f = data.group3 || {};
+  const hasG3 = Object.keys(g3f).length > 0;
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   const pick = (k) => g3f[k] !== undefined ? g3f[k] : (g3f.provenance ? g3f.provenance[k] : undefined);
 
   const g3Fields = hasG3 ? `
@@ -654,7 +832,11 @@ function render(data){
       ` : ''}
       ${isOpenMeteoSource(g3f) ? `<div class="license-note">Weather data by Open-Meteo.com (CC-BY 4.0), aggregating national weather services.</div>` : ''}
     </div>
+<<<<<<< HEAD
   ` : `<div class="field"><div class="k">Status</div><span class="v pending">No Group 3 payload loaded — awaiting live observation echoed via Group 1</span></div>`;
+=======
+  ` : `<div class="field"><div class="k">Status</div><span class="v pending">No Group 3 payload loaded yet — awaiting the observation echoed back via Group 1's retrieval envelope</span></div>`;
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 
   html += nodeCard({
     group: 'Group 3',
@@ -663,14 +845,25 @@ function render(data){
     idValue: data.observation_id,
     evidenceState: hasG3 ? (pick('synthetic_state') || 'NOT_APPLICABLE') : 'NOT_APPLICABLE',
     evidenceNote: hasG3 ? 'derived from synthetic_state as sent by Group 3 — not a separate mapping' : null,
+<<<<<<< HEAD
     failed: g3f && g3f.failed,
     failReason: g3f && g3f.fail_reason,
+=======
+    failed: g3f.failed,
+    failReason: g3f.fail_reason,
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
     fieldsHtml: g3Fields,
     raw: hasG3 ? g3f : null,
     pending: !hasG3
   });
 
+<<<<<<< HEAD
   // Group 1 — canonical record ONLY.
+=======
+  // Group 1 — canonical record ONLY. Group 1 generates/resolves
+  // canonical_record_id from the Group 3 submission; it does not own or
+  // originate any of the raw observation fields above.
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   const g1Fields = g1.not_found ? '' : `
       <div class="field"><div class="k">Retrieval status</div>${fieldVal(g1.retrieval_status,'NOT VERIFIED')}</div>
       <div class="field"><div class="k">Retrieval trace ID</div>${fieldVal(g1.trace_id,'NOT VERIFIED')}</div>
@@ -687,8 +880,13 @@ function render(data){
     failed: g1.not_found || g1.failed,
     failReason: g1.not_found ? 'Observation not found (404 NOT_FOUND)' : g1.fail_reason,
     fieldsHtml: g1Fields ? g1Fields + `<div class="derived-note" style="grid-column:1/-1">Idempotency key shown here is computed client-side per Group 3's documented convention (IK-&lt;observation_id&gt;) — it is not itself returned by the API.</div>` : '',
+<<<<<<< HEAD
     raw: Object.keys(g1).length && !g1.failed ? g1 : null,
     pending: !data.canonical_record_id && !g1.failed
+=======
+    raw: Object.keys(g1).length ? g1 : null,
+    pending: !data.canonical_record_id
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   });
 
   // Group 2 — context + decision
@@ -704,8 +902,11 @@ function render(data){
     <div class="field"><div class="k">Context status</div>${fieldVal(contextStatus,'PENDING')}</div>
     <div class="field"><div class="k">Context found</div>${fieldVal(g2.context_found !== undefined ? String(g2.context_found) : null,'NOT VERIFIED')}</div>
     <div class="field"><div class="k">Trace ID</div>${fieldVal(g2.trace_id,'NOT VERIFIED')}</div>
+<<<<<<< HEAD
     <div class="field"><div class="k">Action eligibility</div>${fieldVal(g2.action_eligibility !== undefined && g2.action_eligibility !== null ? String(g2.action_eligibility) : null,'NOT VERIFIED')}</div>
     <div class="field"><div class="k">Abstention required</div>${fieldVal(g2.abstention_required !== undefined && g2.abstention_required !== null ? String(g2.abstention_required) : null,'NOT VERIFIED')}</div>
+=======
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   `;
 
   if(sc.mean_m || sc.doi || sc.confidence){
@@ -725,7 +926,11 @@ function render(data){
   const decisionOutcomeText = decision === 'ABSTAIN'
     ? 'ABSTAINED — no action taken'
     : (decision || 'DECISION NOT VERIFIED');
+<<<<<<< HEAD
   const decisionHtml = (data.group2 && !data.group2.failed) ? `
+=======
+  const decisionHtml = data.group2 ? `
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
     <div class="decision-block ${decisionClass}">
       <div class="decision-label">Group 2 decision${decisionMade === false ? ' · decision_made: false' : ''}</div>
       <div class="decision-outcome">${decisionOutcomeText}</div>
@@ -733,12 +938,16 @@ function render(data){
     </div>
   ` : '';
 
+<<<<<<< HEAD
   const hasG2Data = data.group2 && Object.keys(data.group2).length > 0 && !data.group2.failed;
 
+=======
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   html += nodeCard({
     group: 'Group 2',
     title: 'Context & Decision',
     idLabel: 'context_id',
+<<<<<<< HEAD
     idValue: hasG2Data ? data.context_id : undefined,
     evidenceState: (hasG2Data && hasEvidenceField) ? (g2.evidence_state || 'NOT_APPLICABLE') : 'NOT_APPLICABLE',
     evidenceNote: hasG2Data ? (hasEvidenceField ? null : 'evidence_state not yet returned by runtime — pending clarification, not defaulted') : null,
@@ -760,15 +969,45 @@ function render(data){
   let outcomeTitle = 'Governed Outcome';
   let outcomeIdLabel = 'action_request_id / abstention_record_id';
   let outcomeIdValue = data.action_request_id || data.abstention_record_id || g4.abstention_record_id;
+=======
+    idValue: data.context_id,
+    evidenceState: hasEvidenceField ? (g2.evidence_state || 'NOT_APPLICABLE') : 'NOT_APPLICABLE',
+    evidenceNote: hasEvidenceField ? null : 'evidence_state not yet returned by runtime — pending clarification, not defaulted',
+    failed: g2.failed,
+    failReason: g2.fail_reason,
+    fieldsHtml: data.group2 ? (g2Fields + decisionHtml) : null,
+    raw: Object.keys(g2).length ? g2 : null,
+    pending: !data.group2
+  });
+
+  // Group 4 — governed outcome: Action Request OR Governed Abstention.
+  // Which one is shown is decided ONLY by the fields the runtime returns
+  // (action_eligibility / abstention_required) — never assumed, never
+  // defaulted to the "normal" Action Request path.
+  const actionEligibility = g4.action_eligibility;
+  const abstentionRequired = g4.abstention_required;
+  const isAbstention = abstentionRequired === true || (actionEligibility === false && g4.action_request == null && data.action_request_id == null);
+  const isActionPath = actionEligibility === true;
+
+  let outcomeTitle = 'Governed Outcome';
+  let outcomeIdLabel = 'action_request_id / abstention_record_id';
+  let outcomeIdValue = data.action_request_id || data.abstention_record_id;
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   let outcomeBlockClass = 'UNKNOWN';
   let outcomeBlockLabel = 'Outcome not yet determined';
 
   if(isAbstention){
     outcomeTitle = 'GOVERNED ABSTENTION';
     outcomeIdLabel = 'abstention_record_id';
+<<<<<<< HEAD
     outcomeIdValue = data.abstention_record_id || g4.abstention_record_id;
     outcomeBlockClass = 'ABSTAIN';
     outcomeBlockLabel = 'GOVERNED ABSTENTION — NO ACTION / NOOP';
+=======
+    outcomeIdValue = data.abstention_record_id;
+    outcomeBlockClass = 'ABSTAIN';
+    outcomeBlockLabel = 'GOVERNED ABSTENTION — no action was authorized';
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   } else if(isActionPath){
     outcomeTitle = 'Action Request';
     outcomeIdLabel = 'action_request_id';
@@ -777,7 +1016,11 @@ function render(data){
     outcomeBlockLabel = 'ACTION AUTHORIZED';
   }
 
+<<<<<<< HEAD
   const hasGovernanceData = g4 && Object.keys(g4).length > 0 && !g4.failed;
+=======
+  const hasGovernanceData = Object.keys(g4).length > 0 || data.abstention_record_id || data.action_request_id;
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 
   let g4Fields = '';
   if(hasGovernanceData){
@@ -785,6 +1028,7 @@ function render(data){
       <div class="field"><div class="k">Status</div>${fieldVal(g4.status,'NOT VERIFIED')}</div>
       <div class="field"><div class="k">Event type</div>${fieldVal(g4.event_type,'NOT VERIFIED')}</div>
       <div class="field"><div class="k">Ruling</div>${fieldVal(g4.ruling,'NOT VERIFIED')}</div>
+<<<<<<< HEAD
       <div class="field"><div class="k">Decision action</div>${fieldVal(g4.decision_action,'NOT VERIFIED')}</div>
       <div class="field"><div class="k">Abstention record ID</div>${fieldVal(g4.abstention_record_id || data.abstention_record_id,'NOT VERIFIED')}</div>
       <div class="field"><div class="k">Execution ID</div>${fieldVal(g4.execution_id || data.execution_id,'NOT VERIFIED')}</div>
@@ -808,6 +1052,23 @@ function render(data){
         <div class="decision-label">Governed outcome · Ruling: ${g4.ruling || ruling || 'ABSTAIN'} · Decision action: ${decisionAction || 'noop'}</div>
         <div class="decision-outcome">${outcomeBlockLabel}</div>
         <div class="decision-reason">${g4.decision_reason || (isAbstention ? 'Governed abstention enforced: ruling is ABSTAIN and decision_action is noop. No operational action taken.' : (g4.ruling || 'No ruling narrative returned.'))}</div>
+=======
+      <div class="field"><div class="k">Action eligibility</div>${fieldVal(actionEligibility !== undefined && actionEligibility !== null ? String(actionEligibility) : null,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Abstention required</div>${fieldVal(abstentionRequired !== undefined && abstentionRequired !== null ? String(abstentionRequired) : null,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Action request</div>${fieldVal(g4.action_request,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Decision type</div>${fieldVal(g4.decision_type,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Decision action</div>${fieldVal(g4.decision_action,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Authority result</div>${fieldVal(g4.authority_result,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Doctrine result</div>${fieldVal(g4.doctrine_result,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Semantic result</div>${fieldVal(g4.semantic_result,'NOT VERIFIED')}</div>
+      <div class="field"><div class="k">Drift result</div>${fieldVal(g4.drift_result,'NOT VERIFIED')}</div>
+    `;
+    g4Fields += `
+      <div class="decision-block ${outcomeBlockClass}" style="grid-column:1/-1">
+        <div class="decision-label">Governed outcome</div>
+        <div class="decision-outcome">${outcomeBlockLabel}</div>
+        <div class="decision-reason">${g4.decision_reason || g4.ruling || 'No ruling narrative returned.'}</div>
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
       </div>
     `;
   }
@@ -816,6 +1077,7 @@ function render(data){
     group: 'Group 4',
     title: outcomeTitle,
     idLabel: outcomeIdLabel,
+<<<<<<< HEAD
     idValue: hasGovernanceData ? outcomeIdValue : undefined,
     evidenceState: (hasGovernanceData && g4.evidence_state) || 'NOT_APPLICABLE',
     failed: g4 && g4.failed,
@@ -823,6 +1085,15 @@ function render(data){
     fieldsHtml: hasGovernanceData ? g4Fields : (g4 && g4.failed ? '' : `<div class="field"><div class="k">Status</div><span class="v pending">Pending upstream live responses</span></div>`),
     raw: hasGovernanceData ? g4 : null,
     pending: !hasGovernanceData && !(g4 && g4.failed)
+=======
+    idValue: outcomeIdValue,
+    evidenceState: (g4 && g4.evidence_state) || 'NOT_APPLICABLE',
+    failed: g4 && g4.failed,
+    failReason: g4 && g4.fail_reason,
+    fieldsHtml: hasGovernanceData ? g4Fields : `<div class="field"><div class="k">Status</div><span class="v pending">Governance/Group 4 endpoint not yet integrated</span></div>`,
+    raw: Object.keys(g4).length ? g4 : null,
+    pending: !hasGovernanceData
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   });
 
   document.getElementById('rail').innerHTML = html;
@@ -831,6 +1102,7 @@ function render(data){
 async function fetchLive(){
   const oid = document.getElementById('oidInput').value.trim();
   const g1url = document.getElementById('g1url').value.trim();
+<<<<<<< HEAD
   const g2url = document.getElementById('g2url').value.trim();
   const g4url = document.getElementById('g4url').value.trim();
   
@@ -872,11 +1144,48 @@ async function fetchLive(){
       } else {
         const envelope = await res.json();
         console.log('[VANA UI] Group 1 response:', envelope);
+=======
+  banner('demo', 'Contacting live APIs…');
+
+  const data = { observation_id: oid, group1: {}, group2: {}, group3: null, group4: null };
+  let anySuccess = false;
+  let anyFailure = false;
+
+  if(g1url){
+    // /health is checked separately from the observation fetch — service
+    // uptime must never be merged into the evidence/origin display.
+    setHealthChip('checking');
+    try{
+      const hres = await fetch(`${g1url}/health`);
+      setHealthChip(hres.ok ? 'ok' : 'down', hres.ok ? 'healthy' : ('HTTP '+hres.status));
+    }catch(e){
+      setHealthChip('down', 'unreachable');
+    }
+
+    try{
+      const res = await fetch(`${g1url}/observations/${encodeURIComponent(oid)}`);
+      if(res.status === 404){
+        data.group1 = { not_found: true };
+        anyFailure = true;
+      } else if(!res.ok){
+        throw new Error('HTTP '+res.status);
+      } else {
+        // Retrieval envelope: { trace_id, observation_id, status, observation }.
+        // `observation` is the Group 3 contract-compliant payload as echoed
+        // back by Group 1 — it belongs to Group 3, not Group 1. Group 1's own
+        // contribution is limited to retrieval status, trace_id, and the
+        // canonical_record_id it generated/resolved.
+        const envelope = await res.json();
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
         const obs = envelope.observation || {};
         const prov = obs.provenance || {};
 
         data.group1 = {
+<<<<<<< HEAD
           retrieval_status: envelope.status,
+=======
+          retrieval_status: envelope.status,       // e.g. RETRIEVED — retrieval status, not evidence
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
           trace_id: envelope.trace_id,
           idempotency_result: envelope.idempotency_result
         };
@@ -921,9 +1230,22 @@ async function fetchLive(){
           }
         };
 
+<<<<<<< HEAD
         if(obs.canonical_record_id) data.canonical_record_id = obs.canonical_record_id;
         if(envelope.canonical_record_id) data.canonical_record_id = envelope.canonical_record_id;
 
+=======
+        // canonical_record_id only overwritten when Group 1 actually returns one —
+        // an explicit null/absent value must stay unresolved, never silently
+        // reused or invented from another source. Group 3 never sends this
+        // field, so it is never read from `obs`.
+        if(obs.canonical_record_id) data.canonical_record_id = obs.canonical_record_id;
+        if(envelope.canonical_record_id) data.canonical_record_id = envelope.canonical_record_id;
+
+        // Some deployments return lineage/governance identifiers on the same
+        // envelope. Pick them up only if actually present — never fabricated
+        // if this endpoint doesn't happen to carry them.
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
         ['context_id','action_request_id','abstention_record_id','event_id',
          'execution_id','tenant_id','lineage_hash'].forEach(k => {
           if(envelope[k] != null) data[k] = envelope[k];
@@ -931,6 +1253,7 @@ async function fetchLive(){
         });
         if(envelope.trace_id && !data.trace_id) data.trace_id = envelope.trace_id;
 
+<<<<<<< HEAD
         if(data.canonical_record_id){
           g1Success = true;
         } else {
@@ -1122,6 +1445,67 @@ async function fetchLive(){
     banner('live', 'LIVE SUCCESS — Full runtime chain connected directly in browser (Group 1 → Group 2 → Group 4)');
   } else {
     banner('error', 'LIVE FETCH HALTED — Upstream runtime data incomplete.');
+=======
+        anySuccess = true;
+      }
+    }catch(e){
+      anyFailure = true;
+      data.group1 = { failed: true, fail_reason: 'Could not reach Group 1 API (' + e.message + ')' };
+    }
+  }
+
+  const g2url = document.getElementById('g2url').value.trim();
+  if(g2url){
+    try{
+      const res = await fetch(g2url, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ observation_id: oid })
+      });
+      const httpStatus = res.status;
+      const json = await res.json();
+      // Map the runtime's actual field names (camelCase, as returned) —
+      // no field is invented if absent.
+      data.group2 = {
+        http_status: httpStatus,
+        context_status: json.context_status || json.contextStatus,
+        decision: json.decision,
+        decision_made: json.decision_made !== undefined ? json.decision_made : json.decisionMade,
+        decision_reason: json.reason || json.decision_reason,
+        trace_id: json.trace_id || json.traceId,
+        context_found: json.context_found !== undefined ? json.context_found : json.contextFound,
+        scientific_context: json.scientific_context || {},
+        gap_fields: json.gap_fields || []
+      };
+      // canonicalRecordId comes back null from this runtime today — reflect
+      // that explicitly rather than leaving Group 1's value unchallenged or blank.
+      if(Object.prototype.hasOwnProperty.call(json, 'canonicalRecordId') || Object.prototype.hasOwnProperty.call(json, 'canonical_record_id')){
+        const crid = json.canonicalRecordId !== undefined ? json.canonicalRecordId : json.canonical_record_id;
+        if(crid) data.canonical_record_id = crid;
+      }
+      anySuccess = true;
+    }catch(e){
+      anyFailure = true;
+      data.group2 = { failed: true, fail_reason: 'Could not reach Group 2 API (' + e.message + ')' };
+    }
+  }
+
+  // Group 3/4 base URLs are placeholders until those groups share endpoints.
+  ['g3url','g4url'].forEach((id) => {
+    const url = document.getElementById(id).value.trim();
+    if(url) anyFailure = true; // not wired yet — surfaced honestly, not silently skipped
+  });
+
+  render(data);
+  lastRenderedData = data;
+
+  if(anySuccess && !anyFailure){
+    banner('live', 'LIVE — showing deployed API responses');
+  } else if(anySuccess && anyFailure){
+    banner('error', 'PARTIAL — some groups unreachable or not yet integrated. See fields marked NOT VERIFIED / PENDING.');
+  } else {
+    banner('error', 'COULD NOT REACH LIVE API — no live data shown. Nothing has been invented; try "Paste sample payload" for a walkthrough.');
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
   }
 }
 
@@ -1148,6 +1532,7 @@ function loadEvidencePack(){
       return;
     }
   }
+<<<<<<< HEAD
   if(lastRenderedData) render(lastRenderedData);
 }
 
@@ -1155,6 +1540,17 @@ function loadEvidencePack(){
 let lastRenderedData = { observation_id: 'TC-Z03-EXT-OPENMETEO-OBS001', group1:{}, group2:{}, group3:null, group4:null };
 render(lastRenderedData);
 setMode('live');
+=======
+  // Re-render whatever is currently on screen so the applicability
+  // classification updates immediately, without requiring a re-fetch.
+  if(lastRenderedData) render(lastRenderedData);
+}
+
+// initial state: attempt nothing until user acts, but show empty honest shell
+let lastRenderedData = { observation_id: 'TC-Z03-EXT-OPENMETEO-OBS001', group1:{}, group2:{}, group3:null, group4:null };
+render(lastRenderedData);
+banner('error', 'No data source selected yet — click "Fetch from live APIs" or "Render this payload" below.');
+>>>>>>> 5cd7f0168a96fc88913552f9a8a6ad99cbdef575
 </script>
 </body>
 </html>
