@@ -134,6 +134,12 @@
   .badge.BLOCKED .sw{background:var(--blocked);}
   .badge.NOT_APPLICABLE{background:var(--na-bg); color:var(--na);}
   .badge.NOT_APPLICABLE .sw{background:var(--na);}
+  .badge.EXTRACTED{background:rgba(184,222,114,.15); color:#d8ed9b;}
+  .badge.EXTRACTED .sw{background:#b8de72;}
+  .badge.UNVERIFIED{background:rgba(229,207,156,.15); color:#e5cf9c;}
+  .badge.UNVERIFIED .sw{background:#e5cf9c;}
+  .badge.VALIDATED{background:var(--live-bg); color:var(--live);}
+  .badge.VALIDATED .sw{background:var(--live);}
   .field-note{font-size:10.5px; color:var(--ink-soft); font-style:italic; margin-top:3px;}
 
   /* decision outcome — kept visually separate from evidence-state badges */
@@ -503,7 +509,7 @@ function fieldValClassified(fieldKey, value, g3f, fallback){
 
 function badge(state){
   const s = (state || 'NOT_APPLICABLE').toUpperCase();
-  const known = ['CONTROLLED','LOCAL','SHARED','LIVE','BLOCKED','NOT_APPLICABLE'];
+  const known = ['CONTROLLED','LOCAL','SHARED','LIVE','BLOCKED','NOT_APPLICABLE','EXTRACTED','UNVERIFIED','VALIDATED'];
   const cls = known.includes(s) ? s : 'NOT_APPLICABLE';
   return `<span class="badge ${cls}"><span class="sw"></span>${cls.replace('_',' ')}</span>`;
 }
@@ -580,6 +586,440 @@ function mapPanel(data, compact){
   return `<div class="map-surface">${valid?`<div class="map-empty"><b>LIVE OBSERVATION POINT</b><span class="map-coord">${escapeHtml(lat)}, ${escapeHtml(lon)}</span></div>`:`<div class="map-empty"><b>LOCATION NOT VERIFIED</b><span>Coordinates were not returned by the current runtime observation.</span></div>`}</div>`;
 }
 function unavailablePage(title, description, required){ return `<div class="view-title"><div><h2>${title}</h2><p>${description}</p></div><span class="live-chip">BACKEND REQUIRED</span></div><div class="empty-state"><b>DATA NOT AVAILABLE</b>${required}</div>`; }
+
+// =========================================================================
+// Forest Cover Intelligence — Real live API integration (G1 MasterDB)
+// =========================================================================
+const G1_FOREST_COVER_URL = 'http://163.128.209.18:8013/datasets/DS-FSI-ISFR-2023-FOREST-COVER/forest-cover';
+
+const FOREST_COVER_FIELDS = [
+  { key: 'record_id', label: 'Record ID' },
+  { key: 'dataset_id', label: 'Dataset ID' },
+  { key: 'assessment_year', label: 'Assessment Year' },
+  { key: 'geography_level', label: 'Geography Level' },
+  { key: 'state', label: 'State' },
+  { key: 'district', label: 'District' },
+  { key: 'boundary_reference', label: 'Boundary Reference' },
+  { key: 'forest_cover_area', label: 'Forest Cover Area' },
+  { key: 'forest_cover_percentage', label: 'Forest Cover %' },
+  { key: 'very_dense_forest_area', label: 'Very Dense Forest' },
+  { key: 'moderately_dense_forest_area', label: 'Moderately Dense' },
+  { key: 'open_forest_area', label: 'Open Forest' },
+  { key: 'mangrove_area', label: 'Mangrove Area' },
+  { key: 'unit', label: 'Unit' },
+  { key: 'methodology', label: 'Methodology' },
+  { key: 'quality_status', label: 'Quality Status' },
+  { key: 'provenance_reference', label: 'Provenance Reference' },
+  { key: 'created_at', label: 'Created At' }
+];
+
+let forestCoverState = {
+  status: 'idle', // 'idle' | 'loading' | 'success' | 'empty' | 'error'
+  data: null,
+  records: [],
+  dataset_id: 'DS-FSI-ISFR-2023-FOREST-COVER',
+  error: null,
+  httpStatus: null,
+  lastFetched: null,
+  raw: null
+};
+
+function extractForestFieldValue(rec, key) {
+  if (!rec || typeof rec !== 'object') return undefined;
+  if (Object.prototype.hasOwnProperty.call(rec, key)) return rec[key];
+  if (rec.dataset && Object.prototype.hasOwnProperty.call(rec.dataset, key)) return rec.dataset[key];
+  if (rec.source && Object.prototype.hasOwnProperty.call(rec.source, key)) return rec.source[key];
+  if (rec.provenance && Object.prototype.hasOwnProperty.call(rec.provenance, key)) return rec.provenance[key];
+  return undefined;
+}
+
+function formatForestValue(val) {
+  if (val === null) {
+    return '<span class="mono" style="color:var(--ink-soft,#8a94a6);font-style:italic">null</span>';
+  }
+  if (val === undefined) {
+    return '<span class="not-verified">NOT PRESENT</span>';
+  }
+  if (typeof val === 'number') {
+    return `<span class="mono">${escapeHtml(String(val))}</span>`;
+  }
+  if (typeof val === 'boolean') {
+    return `<span class="mono">${val ? 'true' : 'false'}</span>`;
+  }
+  return escapeHtml(String(val));
+}
+
+function renderForestCoverHtml() {
+  const { status, records, dataset_id, error, httpStatus, lastFetched, raw } = forestCoverState;
+
+  if (status === 'idle') {
+    setTimeout(() => fetchForestCover(), 0);
+  }
+
+  // 1. LOADING STATE (or idle transitioning to loading)
+  if (status === 'loading' || status === 'idle') {
+    return `
+      <div class="view-title">
+        <div>
+          <h2>Forest Cover Intelligence</h2>
+          <p>Live official forest cover dataset backed by G1 MasterDB Observation API.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="live-chip" style="border-color:#b8de72;color:#b8de72;">CONNECTING TO G1 API…</span>
+          <button class="btn secondary" style="padding:6px 12px;font-size:11px;" disabled>⟳ Refresh</button>
+        </div>
+      </div>
+      <div class="panel" style="text-align:center;padding:48px 20px;">
+        <div class="pulse" style="display:inline-block;margin-bottom:14px;width:12px;height:12px;"></div>
+        <h3 style="margin-bottom:8px;font-size:16px;">Querying G1 Forest Cover Dataset API…</h3>
+        <div class="mono" style="font-size:12px;color:#8da69a;margin-bottom:10px;word-break:break-all;">
+          GET ${escapeHtml(G1_FOREST_COVER_URL)}
+        </div>
+        <div style="font-size:12px;color:#a4b7aa;">Awaiting live response from G1 backend...</div>
+      </div>`;
+  }
+
+  // 2. ERROR STATE
+  if (status === 'error') {
+    return `
+      <div class="view-title">
+        <div>
+          <h2>Forest Cover Intelligence</h2>
+          <p>Live official forest cover dataset backed by G1 MasterDB Observation API.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="live-chip" style="border-color:var(--danger,#de7a64);color:var(--danger,#de7a64);background:rgba(222,122,100,.1);">
+            API ERROR ${httpStatus ? '(HTTP ' + httpStatus + ')' : ''}
+          </span>
+          <button class="btn secondary" style="padding:6px 12px;font-size:11px;" onclick="fetchForestCover(true)">⟳ Retry</button>
+        </div>
+      </div>
+      <div class="panel" style="border-color:rgba(222,122,100,.3);background:rgba(30,15,15,.7);">
+        <div class="panel-head">
+          <div>
+            <h3 style="color:#f5a090;">G1 Forest Cover API Error</h3>
+            <div class="panel-sub">The live endpoint could not be reached or returned an error response</div>
+          </div>
+          <button class="btn" style="padding:6px 12px;font-size:11px;" onclick="fetchForestCover(true)">Retry Request</button>
+        </div>
+        <div class="fail-banner" style="margin-top:0;margin-bottom:16px;">
+          ${escapeHtml(error || 'Network error / request failed')}
+        </div>
+        <table class="data-table">
+          <tbody>
+            <tr><th>Target Endpoint</th><td class="mono">${escapeHtml(G1_FOREST_COVER_URL)}</td></tr>
+            <tr><th>HTTP Status</th><td class="mono">${httpStatus ? 'HTTP ' + httpStatus : 'N/A (Network failure or CORS blocked)'}</td></tr>
+            <tr><th>Timestamp</th><td class="mono">${escapeHtml(lastFetched || 'Not recorded')}</td></tr>
+            <tr><th>Truthful Policy</th><td>Per VANA telemetry rules, NO fallback, demo, or synthetic FSI data is rendered.</td></tr>
+          </tbody>
+        </table>
+        ${raw ? `
+          <div class="raw-toggle" onclick="toggleRaw('raw_forest_err')">Show error details ▾</div>
+          <div class="raw" id="raw_forest_err">${escapeHtml(JSON.stringify(raw, null, 2))}</div>
+        ` : ''}
+      </div>`;
+  }
+
+  // 3. EMPTY RECORD STATE (HTTP 200 OK, but records: [])
+  if (status === 'empty' || (status === 'success' && records.length === 0)) {
+    return `
+      <div class="view-title">
+        <div>
+          <h2>Forest Cover Intelligence</h2>
+          <p>Live official forest cover dataset backed by G1 MasterDB Observation API.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="live-chip">LIVE API CONNECTED (200 OK)</span>
+          <button class="btn secondary" style="padding:6px 12px;font-size:11px;" onclick="fetchForestCover(true)">⟳ Refresh</button>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <article class="kpi">
+          <div class="k">Dataset ID</div>
+          <div class="n" style="font-size:14px;">${escapeHtml(dataset_id || 'DS-FSI-ISFR-2023-FOREST-COVER')}</div>
+          <div class="note">FSI ISFR 2023 Official Dataset</div>
+        </article>
+        <article class="kpi">
+          <div class="k">Record count</div>
+          <div class="n">0</div>
+          <div class="note">Empty dataset array returned</div>
+        </article>
+        <article class="kpi">
+          <div class="k">API Status</div>
+          <div class="n" style="color:var(--lime);">200 OK</div>
+          <div class="note">G1 endpoint operational</div>
+        </article>
+        <article class="kpi">
+          <div class="k">Fallback policy</div>
+          <div class="n" style="font-size:14px;color:#e5cf9c;">ZERO MOCK DATA</div>
+          <div class="note">Strict truthful reporting</div>
+        </article>
+        <article class="kpi">
+          <div class="k">Service</div>
+          <div class="n" style="font-size:14px;">G1 MasterDB</div>
+          <div class="note">Port 8013 observation runtime</div>
+        </article>
+      </div>
+
+      <div class="panel" style="margin-top:14px;">
+        <div class="panel-head">
+          <div>
+            <h3>Official Forest Cover Records</h3>
+            <div class="panel-sub">Response payload from live G1 dataset service</div>
+          </div>
+          <span class="live-chip" style="font-size:10px;">0 RECORDS RETURNED</span>
+        </div>
+        <div class="empty-state">
+          <b>EMPTY DATASET RESPONSE (HTTP 200 OK)</b>
+          The G1 endpoint <code class="mono" style="color:#d4ef9c;padding:2px 6px;background:rgba(0,0,0,0.3);border-radius:4px;">${escapeHtml(G1_FOREST_COVER_URL)}</code> responded successfully with HTTP 200 OK, but returned 0 records in <code class="mono">records: []</code>.
+          <div style="margin-top:10px;font-size:11.5px;color:#8da69a;">
+            Per VANA strict truthful telemetry rules, NO fallback, demo, or hardcoded FSI data is injected. The view faithfully reflects the real live API response.
+          </div>
+          <div style="margin-top:16px;">
+            <button class="btn" style="padding:7px 16px;font-size:12px;" onclick="fetchForestCover(true)">⟳ Re-check Live API</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="panel" style="margin-top:14px;">
+        <div class="panel-head">
+          <div>
+            <h3>Source &amp; Provenance Verification</h3>
+            <div class="panel-sub">Live G1 MasterDB API verification metadata</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <tbody>
+            <tr><th>API Endpoint</th><td class="mono">${escapeHtml(G1_FOREST_COVER_URL)}</td></tr>
+            <tr><th>Dataset ID</th><td class="mono">${escapeHtml(dataset_id || 'DS-FSI-ISFR-2023-FOREST-COVER')}</td></tr>
+            <tr><th>HTTP Status</th><td class="mono">200 OK</td></tr>
+            <tr><th>Records Count</th><td class="mono">0</td></tr>
+            <tr><th>Retrieval Timestamp</th><td class="mono">${escapeHtml(lastFetched || 'Just now')}</td></tr>
+            <tr><th>CORS Status</th><td class="mono">Permitted (access-control-allow-origin: *)</td></tr>
+          </tbody>
+        </table>
+        ${raw ? `
+          <div class="raw-toggle" onclick="toggleRaw('raw_forest_cover')">Show raw API response ▾</div>
+          <div class="raw" id="raw_forest_cover">${escapeHtml(JSON.stringify(raw, null, 2))}</div>
+        ` : ''}
+      </section>`;
+  }
+
+  // 4. RECORDS STATE (HTTP 200 OK with records)
+  const totalArea = records.reduce((acc, r) => {
+    const a = extractForestFieldValue(r, 'forest_cover_area');
+    return typeof a === 'number' ? acc + a : acc;
+  }, 0);
+  const distinctStates = [...new Set(records.map(r => extractForestFieldValue(r, 'state')).filter(Boolean))];
+
+  return `
+    <div class="view-title">
+      <div>
+        <h2>Forest Cover Intelligence</h2>
+        <p>Live official forest cover dataset backed by G1 MasterDB Observation API.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="live-chip">LIVE RECORDS (${records.length})</span>
+        <button class="btn secondary" style="padding:6px 12px;font-size:11px;" onclick="fetchForestCover(true)">⟳ Refresh</button>
+      </div>
+    </div>
+    <div class="kpi-grid">
+      <article class="kpi">
+        <div class="k">Dataset ID</div>
+        <div class="n" style="font-size:14px;">${escapeHtml(dataset_id || 'DS-FSI-ISFR-2023-FOREST-COVER')}</div>
+        <div class="note">FSI ISFR 2023 Official Dataset</div>
+      </article>
+      <article class="kpi">
+        <div class="k">Total Records</div>
+        <div class="n">${records.length}</div>
+        <div class="note">Live records from G1 API</div>
+      </article>
+      <article class="kpi">
+        <div class="k">Coverage Areas (Sum)</div>
+        <div class="n" style="font-size:18px;">${totalArea > 0 ? escapeHtml(String(totalArea)) : 'SEE RECORDS'}</div>
+        <div class="note">Total forest cover area returned</div>
+      </article>
+      <article class="kpi">
+        <div class="k">Geographies</div>
+        <div class="n" style="font-size:15px;">${distinctStates.length > 0 ? escapeHtml(distinctStates.join(', ')) : 'VERIFIED IN RECORDS'}</div>
+        <div class="note">States / jurisdictions</div>
+      </article>
+      <article class="kpi">
+        <div class="k">API Status</div>
+        <div class="n" style="color:var(--lime);">200 OK</div>
+        <div class="note">Live data streaming</div>
+      </article>
+    </div>
+
+    ${records.length > 1 ? `
+      <section class="panel" style="margin-top:14px;">
+        <div class="panel-head">
+          <div>
+            <h3>Records Overview</h3>
+            <div class="panel-sub">${records.length} records returned by G1 API</div>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Record ID</th>
+                <th>Year</th>
+                <th>Geo Level</th>
+                <th>State</th>
+                <th>District</th>
+                <th>Cover Area</th>
+                <th>Cover %</th>
+                <th>Very Dense</th>
+                <th>Mod. Dense</th>
+                <th>Open</th>
+                <th>Mangrove</th>
+                <th>Unit</th>
+                <th>Quality Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${records.map(rec => `
+                <tr>
+                  <td class="mono">${formatForestValue(extractForestFieldValue(rec, 'record_id'))}</td>
+                  <td>${formatForestValue(extractForestFieldValue(rec, 'assessment_year'))}</td>
+                  <td>${formatForestValue(extractForestFieldValue(rec, 'geography_level'))}</td>
+                  <td>${formatForestValue(extractForestFieldValue(rec, 'state'))}</td>
+                  <td>${formatForestValue(extractForestFieldValue(rec, 'district'))}</td>
+                  <td class="mono">${formatForestValue(extractForestFieldValue(rec, 'forest_cover_area'))}</td>
+                  <td class="mono">${formatForestValue(extractForestFieldValue(rec, 'forest_cover_percentage'))}</td>
+                  <td class="mono">${formatForestValue(extractForestFieldValue(rec, 'very_dense_forest_area'))}</td>
+                  <td class="mono">${formatForestValue(extractForestFieldValue(rec, 'moderately_dense_forest_area'))}</td>
+                  <td class="mono">${formatForestValue(extractForestFieldValue(rec, 'open_forest_area'))}</td>
+                  <td class="mono">${formatForestValue(extractForestFieldValue(rec, 'mangrove_area'))}</td>
+                  <td>${formatForestValue(extractForestFieldValue(rec, 'unit'))}</td>
+                  <td><span class="badge ${String(extractForestFieldValue(rec, 'quality_status') || '').toUpperCase()}"><span class="sw"></span>${formatForestValue(extractForestFieldValue(rec, 'quality_status'))}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    ` : ''}
+
+    <div style="margin-top:14px;display:grid;gap:14px;">
+      ${records.map((rec, idx) => {
+        const recId = extractForestFieldValue(rec, 'record_id');
+        const stateVal = extractForestFieldValue(rec, 'state');
+        const districtVal = extractForestFieldValue(rec, 'district');
+        const qStatus = extractForestFieldValue(rec, 'quality_status');
+
+        return `
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Record #${idx + 1}: ${formatForestValue(recId)}</h3>
+                <div class="panel-sub">
+                  ${stateVal ? escapeHtml(String(stateVal)) : ''}${districtVal ? ' · ' + escapeHtml(String(districtVal)) : ''}
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                ${qStatus !== undefined ? `<span class="badge ${String(qStatus).toUpperCase()}"><span class="sw"></span>${escapeHtml(String(qStatus))}</span>` : ''}
+                <span class="live-chip" style="font-size:10px;">LIVE RECORD</span>
+              </div>
+            </div>
+
+            <div class="field-grid" style="margin-top:14px;">
+              ${FOREST_COVER_FIELDS.map(f => {
+                const val = extractForestFieldValue(rec, f.key);
+                return `
+                  <div class="field">
+                    <div class="k">${escapeHtml(f.label)}</div>
+                    <div class="v">${formatForestValue(val)}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </section>
+        `;
+      }).join('')}
+    </div>
+
+    <section class="panel" style="margin-top:14px;">
+      <div class="panel-head">
+        <div>
+          <h3>Source &amp; Provenance Verification</h3>
+          <div class="panel-sub">Live G1 MasterDB API verification metadata</div>
+        </div>
+      </div>
+      <table class="data-table">
+        <tbody>
+          <tr><th>API Endpoint</th><td class="mono">${escapeHtml(G1_FOREST_COVER_URL)}</td></tr>
+          <tr><th>Dataset ID</th><td class="mono">${escapeHtml(dataset_id || 'DS-FSI-ISFR-2023-FOREST-COVER')}</td></tr>
+          <tr><th>HTTP Status</th><td class="mono">200 OK</td></tr>
+          <tr><th>Records Returned</th><td class="mono">${records.length}</td></tr>
+          <tr><th>Retrieval Timestamp</th><td class="mono">${escapeHtml(lastFetched || 'Just now')}</td></tr>
+        </tbody>
+      </table>
+      ${raw ? `
+        <div class="raw-toggle" onclick="toggleRaw('raw_forest_cover')">Show raw API response ▾</div>
+        <div class="raw" id="raw_forest_cover">${escapeHtml(JSON.stringify(raw, null, 2))}</div>
+      ` : ''}
+    </section>`;
+}
+
+function renderForestCoverView() {
+  const el = document.getElementById('view-forest');
+  if (el) {
+    el.innerHTML = renderForestCoverHtml();
+  }
+}
+
+async function fetchForestCover(force = false) {
+  if (forestCoverState.status === 'loading' && !force) return;
+  forestCoverState.status = 'loading';
+  forestCoverState.error = null;
+  renderForestCoverView();
+
+  const url = G1_FOREST_COVER_URL;
+  console.log('[VANA UI] Forest Cover API request: GET', url);
+
+  try {
+    const res = await fetch(url);
+    forestCoverState.httpStatus = res.status;
+    forestCoverState.lastFetched = new Date().toISOString();
+    console.log('[VANA UI] Forest Cover API response status:', res.status);
+
+    if (!res.ok) {
+      forestCoverState.status = 'error';
+      forestCoverState.error = `HTTP ${res.status} ${res.statusText || 'Error'}`;
+      try {
+        forestCoverState.raw = await res.json();
+      } catch (_) {
+        forestCoverState.raw = { status: res.status, statusText: res.statusText };
+      }
+    } else {
+      const json = await res.json();
+      forestCoverState.raw = json;
+      forestCoverState.data = json;
+      forestCoverState.dataset_id = json.dataset_id || 'DS-FSI-ISFR-2023-FOREST-COVER';
+
+      const recs = Array.isArray(json.records) ? json.records : (Array.isArray(json) ? json : []);
+      forestCoverState.records = recs;
+
+      if (recs.length === 0) {
+        forestCoverState.status = 'empty';
+      } else {
+        forestCoverState.status = 'success';
+      }
+    }
+  } catch (err) {
+    console.error('[VANA UI] Forest Cover API network/CORS error:', err);
+    forestCoverState.status = 'error';
+    forestCoverState.error = err.message || 'Network error or CORS issue connecting to G1 Forest Cover API';
+    forestCoverState.httpStatus = null;
+    forestCoverState.lastFetched = new Date().toISOString();
+    forestCoverState.raw = { error: err.message || String(err) };
+  }
+
+  renderForestCoverView();
+}
+
 function renderCommandCenter(data){
   // Keep the live controls intact while the overview cards are refreshed.
   ['.runtime-controls .source-panel','.runtime-controls .mode-banner','.runtime-controls .health-strip'].forEach(selector=>{
@@ -612,7 +1052,7 @@ function renderCommandCenter(data){
   }
   const rail=document.getElementById('rail'), commandRail=document.getElementById('commandRail'); if(rail&&commandRail) commandRail.innerHTML=rail.innerHTML;
   const pages={
-    forest:unavailablePage('Forest Cover','Forest-cover measurements and historic geospatial coverage are not present in the current observation contract.','Connect a forest-cover measurement, district boundary, and time-series backend to enable this view.'),
+    forest:renderForestCoverHtml(),
     plantation:unavailablePage('Plantation','No plantation-specific observation classification or progress data was returned.','Requires plantation status, location, and progress fields from the backend.'),
     wildlife:hasObservation?`<div class="view-title"><div><h2>Wildlife Monitoring</h2><p>Current observation facts; species classification is not inferred.</p></div><span class="live-chip">LIVE OBSERVATION</span></div><div class="two-panels"><section class="panel"><h3>Current Wildlife-Relevant Observation</h3><table class="data-table"><tbody><tr><th>Observation ID</th><td>${present(data.observation_id)}</td></tr><tr><th>Type</th><td>${present(g3.observation_type)}</td></tr><tr><th>Timestamp</th><td>${present(g3.observation_timestamp)}</td></tr><tr><th>Source</th><td>${present(g3.source_identity)}</td></tr><tr><th>Species</th><td class="not-verified">NOT VERIFIED</td></tr></tbody></table></section><section class="panel"><h3>Observation Location</h3>${mapPanel(data,true)}</section></div>`:unavailablePage('Wildlife Monitoring','Awaiting a live observation.','Requires an observation response from Group 1.'),
     conflict:unavailablePage('Human-Wildlife Conflict','The live response contains no conflict incident or severity fields.','Requires conflict classification, severity, location, and alert data.'),
@@ -1314,6 +1754,7 @@ function loadEvidencePack(){
 let lastRenderedData = { observation_id: '', group1:{}, group2:{}, group3:null, group4:null };
 render(lastRenderedData);
 setMode('live');
+fetchForestCover();
 
 document.querySelectorAll('.side-nav button[data-view]').forEach(button => button.addEventListener('click', () => {
   const view=button.dataset.view;
@@ -1321,6 +1762,9 @@ document.querySelectorAll('.side-nav button[data-view]').forEach(button => butto
   document.querySelectorAll('.command-view').forEach(section=>section.classList.toggle('active',section.id==='view-'+view));
   document.getElementById('sidebar').classList.remove('open');
   window.scrollTo({top:0,behavior:'smooth'});
+  if(view === 'forest' && forestCoverState.status === 'idle'){
+    fetchForestCover();
+  }
 }));
 document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
 </script>
