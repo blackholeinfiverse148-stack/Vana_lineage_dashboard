@@ -20,6 +20,7 @@ TARGETS = {
     "/proxy/g1": "http://163.128.209.18:8013",
     "/proxy/g2": "https://niyantran.blackholeinfiverse.com",
     "/proxy/g4": "http://163.128.209.18:8010",
+    "/proxy/kavy": "http://127.0.0.1:8000",
 }
 
 class VANAHandler(http.server.SimpleHTTPRequestHandler):

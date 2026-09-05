@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VANA PRAKRITI - Forest Intelligence Command Center</title>
+  <title>VANA — Environmental Governance Monitoring System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Leaflet CSS for accurate geographic tile mapping -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <link rel="stylesheet" href="styles.css">
@@ -25,16 +25,16 @@
     <div>
       <div class="sidebar-header">
         <div class="emblem-icon">
-          <!-- Ashoka Chakra / Tree Insignia SVG -->
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L12 22"/>
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            <circle cx="12" cy="12" r="10"/>
+          <!-- State Institutional Emblem / Seal SVG -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+            <path d="M12 6v12"/>
+            <path d="M8 10h8"/>
           </svg>
         </div>
         <div class="brand-text">
-          <div class="brand-title">VANA Prakriti</div>
-          <div class="brand-subtitle">Command Center v2.2</div>
+          <div class="brand-title">VANA</div>
+          <div class="brand-subtitle">Environmental Governance</div>
         </div>
         <button class="sidebar-close-btn" onclick="toggleSidebar(false)" aria-label="Close navigation">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -75,12 +75,18 @@
         <a class="nav-item" id="navItemGovernance" onclick="switchMainTab('governanceView', this)" title="Automated Governance Decision Matrix">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span>Governance Matrix</span>
-          <span class="nav-badge" style="background:var(--amber-bg);color:var(--amber-bright)">ABSTAIN</span>
+          <span class="nav-badge" style="background:var(--status-warn-bg);color:var(--status-warn)">ABSTAIN</span>
         </a>
 
         <a class="nav-item" id="navItemScientific" onclick="switchMainTab('scientificView', this)" title="Botanical Model Context & Research DOI References">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 2v7.31"></path><path d="M14 2v7.31"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path></svg>
           <span>Scientific Context</span>
+        </a>
+
+        <a class="nav-item" id="navItemDataRegistry" onclick="switchMainTab('dataRegistryView', this)" title="KAVY MasterDB Data Registry & Certification Surface">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+          <span>Data Registry</span>
+          <span class="nav-badge">KAVY</span>
         </a>
 
         <a class="nav-item" id="navItemEvidencePack" onclick="switchMainTab('evidencePackView', this)" title="Group 3 JSON Source Evidence Pack">
@@ -100,10 +106,10 @@
     <!-- Minister / Executive Persona Card -->
     <div class="sidebar-footer">
       <div class="minister-card">
-        <div class="minister-avatar">MO</div>
+        <div class="minister-avatar">MH</div>
         <div class="minister-info">
-          <div class="minister-name">Hon. Minister</div>
-          <div class="minister-role">Environment &amp; Forest Gov</div>
+          <div class="minister-name">State Surveillance</div>
+          <div class="minister-role">Dept of Environment &amp; Forest</div>
         </div>
       </div>
     </div>
@@ -120,9 +126,14 @@
         <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Navigation">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
+        <div class="header-emblem-badge hide-on-mobile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+          </svg>
+        </div>
         <div class="header-title-group">
-          <h1>FOREST INTELLIGENCE COMMAND CENTER</h1>
-          <div class="header-subtitle">Government of India · Operational Surface for Forest Officials · Real-Time Backend Verified</div>
+          <h1>VANA — Environmental Governance Monitoring System</h1>
+          <div class="header-subtitle">Government of Maharashtra · Department of Environment &amp; Climate Change · Operational Surveillance Surface</div>
         </div>
       </div>
 
@@ -130,14 +141,14 @@
         <!-- Live Clock (IST) -->
         <div class="clock-pill mono">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span id="liveDateStr" class="hide-on-mobile">25 Aug 2026</span>
-          <span class="time-ist" id="liveTimeStr">16:30:00 IST</span>
+          <span id="liveDateStr" class="hide-on-mobile">-- --- ----</span>
+          <span class="time-ist" id="liveTimeStr">--:--:-- IST</span>
         </div>
 
         <!-- System Health Beacon -->
         <div class="system-status-pill" id="systemStatusPill">
           <div class="pulse-dot"></div>
-          <span id="systemStatusText" class="hide-on-mobile">All Systems Online</span>
+          <span id="systemStatusText" class="hide-on-mobile">Testing Systems...</span>
         </div>
 
         <!-- Action Controls -->
@@ -166,7 +177,7 @@
         </div>
         <div class="pinned-identity-item">
           <span class="pinned-k">Context ID:</span>
-          <span class="mono pinned-v" id="pinnedContextId" style="color:var(--amber-bright)">null</span>
+          <span class="mono pinned-v" id="pinnedContextId" style="color:var(--status-warn)">null</span>
         </div>
       </div>
     </div>
@@ -197,10 +208,10 @@
             <span class="kpi-title">Data Freshness</span>
             <svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </div>
-          <div class="kpi-value" id="kpiFreshnessVal">Live Verified</div>
+          <div class="kpi-value" id="kpiFreshnessVal">Unverified</div>
           <div class="kpi-footer">
-            <span class="kpi-subtext mono" id="kpiFreshnessSub">2026-08-25 11:00 UTC</span>
-            <span class="kpi-badge" id="kpiFreshnessBadge">Authoritative</span>
+            <span class="kpi-subtext mono" id="kpiFreshnessSub">Awaiting telemetry</span>
+            <span class="kpi-badge" id="kpiFreshnessBadge">Unverified</span>
           </div>
         </div>
 
@@ -221,7 +232,7 @@
         <div class="kpi-card" onclick="focusAlerts()" style="cursor:pointer">
           <div class="kpi-header">
             <span class="kpi-title">Exceptions &amp; Gaps</span>
-            <svg class="kpi-icon" style="color:var(--amber-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <svg class="kpi-icon" style="color:var(--status-warn)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           </div>
           <div class="kpi-value amber" id="kpiAlertsVal">6 Active</div>
           <div class="kpi-footer">
@@ -234,7 +245,7 @@
         <div class="kpi-card" onclick="switchMainTab('governanceView', document.getElementById('navItemGovernance'))" style="cursor:pointer">
           <div class="kpi-header">
             <span class="kpi-title">Governed Ruling</span>
-            <svg class="kpi-icon" style="color:var(--amber-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <svg class="kpi-icon" style="color:var(--status-warn)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           </div>
           <div class="kpi-value amber" id="kpiRulingVal">ABSTAIN</div>
           <div class="kpi-footer">
@@ -283,8 +294,12 @@
                 <span>Governance</span>
               </button>
               <button class="stage-tab" id="tabBtnScientific" onclick="switchStageView('scientific')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31"></path><path d="M14 2v7.31"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path></svg>
                 <span>Scientific</span>
+              </button>
+              <button class="stage-tab" id="tabBtnDataRegistry" onclick="switchStageView('dataRegistry')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                <span>Data Registry</span>
               </button>
               <button class="stage-tab" id="tabBtnReplay" onclick="switchStageView('replay')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
@@ -341,21 +356,6 @@
                 </div>
 
                 <svg class="map-svg-container" viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet">
-                  <defs>
-                    <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stop-color="rgba(16,185,129,0.35)"/>
-                      <stop offset="60%" stop-color="rgba(16,185,129,0.08)"/>
-                      <stop offset="100%" stop-color="transparent"/>
-                    </radialGradient>
-                    <filter id="emeraldGlow" x="-50%" y="-50%" width="200%" height="200%">
-                      <feGaussianBlur stdDeviation="3" result="blur"/>
-                      <feMerge>
-                        <feMergeNode in="blur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-                  </defs>
-
                   <g class="map-grid-layer">
                     <line x1="80" y1="0" x2="80" y2="480" />
                     <line x1="180" y1="0" x2="180" y2="480" />
@@ -381,55 +381,53 @@
                   <path class="district-path" d="M 440 95 L 530 115 L 620 145 L 710 185 L 750 240 L 730 310 L 650 300 L 580 230 L 490 190 Z" />
 
                   <!-- Radar Ring at Thane Creek -->
-                  <circle cx="178" cy="245" r="75" fill="url(#radarGlow)" opacity="0.6" class="marker-pulse" />
-                  <circle cx="178" cy="245" r="38" fill="none" stroke="rgba(16,185,129,0.45)" stroke-width="1" stroke-dasharray="3 3" />
+                  <circle cx="178" cy="245" r="38" fill="none" stroke="rgba(201,130,43,0.3)" stroke-width="1" stroke-dasharray="3 3" />
 
                   <!-- Marker 1: CONFIRMED LIVE - THANE CREEK -->
                   <g class="map-marker" transform="translate(178, 245)" onclick="selectRegion('thane_creek')">
-                    <circle cx="0" cy="0" r="13" fill="rgba(16, 185, 129, 0.25)" class="marker-pulse" />
-                    <circle cx="0" cy="0" r="6.5" fill="#10B981" filter="url(#emeraldGlow)" stroke="#FFFFFF" stroke-width="1.5" />
-                    <circle cx="0" cy="0" r="2" fill="#FFFFFF" />
+                    <circle cx="0" cy="0" r="10" fill="rgba(58, 143, 92, 0.25)" />
+                    <circle cx="0" cy="0" r="5" fill="#3A8F5C" stroke="#EDEFF3" stroke-width="1.5" />
                     <text x="13" y="-3" class="marker-label">Thane Creek</text>
                     <text x="13" y="9" class="marker-label-sub">TC-Z03-EXT-OPENMETEO-OBS001 · LIVE</text>
                   </g>
 
                   <!-- Marker 2: PENDING - MUMBAI -->
                   <g class="map-marker" transform="translate(154, 275)" onclick="selectRegion('mumbai')">
-                    <circle cx="0" cy="0" r="5" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="3 2" />
-                    <circle cx="0" cy="0" r="1.8" fill="#F59E0B" />
-                    <text x="10" y="3" class="marker-label" fill="#94A3B8">Mumbai</text>
+                    <circle cx="0" cy="0" r="5" fill="none" stroke="#C9822B" stroke-width="1.5" stroke-dasharray="3 2" />
+                    <circle cx="0" cy="0" r="1.8" fill="#C9822B" />
+                    <text x="10" y="3" class="marker-label" fill="#8D96A8">Mumbai</text>
                     <text x="10" y="13" class="marker-label-sub">MU-Z01 · Not yet retrievable</text>
                   </g>
 
                   <!-- Marker 3: PENDING - NAVI MUMBAI -->
                   <g class="map-marker" transform="translate(196, 278)" onclick="selectRegion('navi_mumbai')">
-                    <circle cx="0" cy="0" r="5" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 2" />
-                    <circle cx="0" cy="0" r="1.8" fill="#94A3B8" />
-                    <text x="10" y="3" class="marker-label" fill="#94A3B8">Navi Mumbai</text>
+                    <circle cx="0" cy="0" r="5" fill="none" stroke="#6B7486" stroke-width="1.5" stroke-dasharray="3 2" />
+                    <circle cx="0" cy="0" r="1.8" fill="#6B7486" />
+                    <text x="10" y="3" class="marker-label" fill="#8D96A8">Navi Mumbai</text>
                     <text x="10" y="13" class="marker-label-sub">NM-Z01 · Not yet retrievable</text>
                   </g>
 
                   <!-- Marker 4: PENDING - VASAI -->
                   <g class="map-marker" transform="translate(160, 202)" onclick="selectRegion('vasai')">
-                    <circle cx="0" cy="0" r="5" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 2" />
-                    <circle cx="0" cy="0" r="1.8" fill="#94A3B8" />
-                    <text x="10" y="3" class="marker-label" fill="#94A3B8">Vasai</text>
+                    <circle cx="0" cy="0" r="5" fill="none" stroke="#6B7486" stroke-width="1.5" stroke-dasharray="3 2" />
+                    <circle cx="0" cy="0" r="1.8" fill="#6B7486" />
+                    <text x="10" y="3" class="marker-label" fill="#8D96A8">Vasai</text>
                     <text x="10" y="13" class="marker-label-sub">VS-Z01 · Not yet retrievable</text>
                   </g>
 
                   <!-- Marker 5: PENDING - THANE -->
                   <g class="map-marker" transform="translate(198, 222)" onclick="selectRegion('thane')">
-                    <circle cx="0" cy="0" r="5" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 2" />
-                    <circle cx="0" cy="0" r="1.8" fill="#94A3B8" />
-                    <text x="10" y="3" class="marker-label" fill="#94A3B8">Thane</text>
+                    <circle cx="0" cy="0" r="5" fill="none" stroke="#6B7486" stroke-width="1.5" stroke-dasharray="3 2" />
+                    <circle cx="0" cy="0" r="1.8" fill="#6B7486" />
+                    <text x="10" y="3" class="marker-label" fill="#8D96A8">Thane</text>
                     <text x="10" y="13" class="marker-label-sub">THN-Z01 · Not yet retrievable</text>
                   </g>
 
                   <!-- Marker 6: PENDING - MAVAL -->
                   <g class="map-marker" transform="translate(255, 290)" onclick="selectRegion('maval')">
-                    <circle cx="0" cy="0" r="5" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 2" />
-                    <circle cx="0" cy="0" r="1.8" fill="#94A3B8" />
-                    <text x="10" y="3" class="marker-label" fill="#94A3B8">Maval</text>
+                    <circle cx="0" cy="0" r="5" fill="none" stroke="#6B7486" stroke-width="1.5" stroke-dasharray="3 2" />
+                    <circle cx="0" cy="0" r="1.8" fill="#6B7486" />
+                    <text x="10" y="3" class="marker-label" fill="#8D96A8">Maval</text>
                     <text x="10" y="13" class="marker-label-sub">MV-Z01 · Not yet retrievable</text>
                   </g>
                 </svg>
@@ -450,19 +448,19 @@
               <div class="map-telemetry-strip" id="mapTelemetryBar">
                 <div class="telemetry-item">
                   <div class="telemetry-label">Ingestion Source &amp; License</div>
-                  <div class="telemetry-value" id="telSourceVal">Open-Meteo.com (CC-BY 4.0)</div>
+                  <div class="telemetry-value" id="telSourceVal">Connecting...</div>
                 </div>
                 <div class="telemetry-item">
                   <div class="telemetry-label">Sensor Measurement</div>
-                  <div class="telemetry-value emerald" id="telMeasurementVal">0.1 mm (Precipitation)</div>
+                  <div class="telemetry-value" id="telMeasurementVal">Connecting...</div>
                 </div>
                 <div class="telemetry-item">
                   <div class="telemetry-label">Coordinates &amp; Elevation</div>
-                  <div class="telemetry-value mono" id="telLocationVal">19.1288° N, 72.9421° E (4.0m)</div>
+                  <div class="telemetry-value mono" id="telLocationVal">Connecting...</div>
                 </div>
                 <div class="telemetry-item">
                   <div class="telemetry-label">Synthetic State Classification</div>
-                  <div class="telemetry-value amber" id="telSyntheticVal">CONTROLLED (Synthetic)</div>
+                  <div class="telemetry-value" id="telSyntheticVal">Connecting...</div>
                 </div>
               </div>
             </div>
@@ -514,6 +512,42 @@
               </div>
             </div>
 
+            <!-- STAGE VIEW 4.5: DATA REGISTRY & CERTIFICATION SURFACE (KAVY MASTERDB) -->
+            <div class="field-summary-wrapper" id="viewDataRegistry" style="display:none">
+              <div class="stage-card" style="margin-bottom:12px">
+                <div class="stage-card-head">
+                  <div>
+                    <div class="stage-group-tag">KAVY MasterDB · Data Registry &amp; Certification Surface</div>
+                    <div class="stage-title">Single-Record MasterDB Status &amp; Package Runtime Lookup</div>
+                    <div class="stage-id-line">Read-only live registry audit. Per constitutional doctrine, zero defaults are fabricated.</div>
+                  </div>
+                </div>
+
+                <div class="kavy-lookup-bar" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:10px">
+                  <div style="flex:1;min-width:220px">
+                    <label for="kavyLookupId" style="display:block;font-size:10px;font-weight:600;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Record Identifier (dataset_id or package_id)</label>
+                    <input type="text" id="kavyLookupId" class="mono" style="width:100%;padding:7px 10px;border-radius:var(--radius-sm);background:var(--bg-input);border:1px solid var(--border-subtle);color:var(--text-primary);font-size:11.5px" placeholder="Enter ID to query live record" autocomplete="off" />
+                  </div>
+                  <div class="hide-on-small" style="width:180px">
+                    <label for="kavyBaseUrl" style="display:block;font-size:10px;font-weight:600;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px">Base Endpoint</label>
+                    <input type="text" id="kavyBaseUrl" class="mono" style="width:100%;padding:7px 10px;border-radius:var(--radius-sm);background:var(--bg-input);border:1px solid var(--border-subtle);color:var(--text-primary);font-size:11.5px" placeholder="/proxy/kavy" value="/proxy/kavy" />
+                  </div>
+                  <button class="btn-header" onclick="lookupKavyData()" style="padding:7px 14px">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span>Look up</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="kavyResultContainer">
+                <div class="decision-block" style="background:var(--bg-surface);border-color:var(--border-subtle)">
+                  <div class="decision-label" style="color:var(--text-muted)">Awaiting Query</div>
+                  <div class="decision-outcome" style="font-size:12.5px;color:var(--text-secondary)">NO RECORD QUERIED</div>
+                  <div class="decision-reason">Enter a confirmed live dataset_id or package_id above and click <strong>Look up</strong> to inspect status and runtime certification metadata directly from KAVY MasterDB.</div>
+                </div>
+              </div>
+            </div>
+
             <!-- STAGE VIEW 5: REPLAY & DIFF ENGINE -->
             <div class="replay-wrapper" id="viewReplay" style="display:none">
               <div class="replay-control-card">
@@ -553,7 +587,7 @@
             <div class="json-viewer-container" id="viewEvidencePack" style="display:none">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
                 <div>
-                  <strong style="color:#FFFFFF">Group 3 Source Evidence Pack v2.2</strong>
+                  <strong style="color:var(--ink)">Group 3 Source Evidence Pack v2.2</strong>
                   <span style="color:var(--text-muted);font-size:10.5px;margin-left:6px">(SOURCE_EVIDENCE_PACK_EMITTED_TC-Z03-EXT-OPENMETEO-OBS001.json)</span>
                 </div>
                 <span class="badge CONTROLLED"><span class="badge-swatch"></span>§26 / §49.1 Compliant</span>
@@ -592,7 +626,7 @@
 
           <!-- Strict Governance Guardrail Notice -->
           <div class="guardrail-notice">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--status-warn)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
             <span><strong>Decision surface only</strong> - manual ALLOW and override controls are disabled by constitutional doctrine.</span>
           </div>
         </section>
@@ -604,24 +638,24 @@
         <div class="footer-chips-group">
           <div class="telemetry-chip" id="chipCoreSystem">
             <div class="chip-dot"></div>
-            <span>Core Axis: <strong>Operational</strong></span>
+            <span>System Status: <strong>Operational</strong></span>
           </div>
           <div class="telemetry-chip" id="chipDataSync">
             <div class="chip-dot"></div>
-            <span>Data Sync: <strong>Fail-Closed Active</strong></span>
+            <span>Surveillance Policy: <strong>Strict Fail-Closed</strong></span>
           </div>
           <div class="telemetry-chip hide-on-mobile" id="chipFeeds">
             <div class="chip-dot"></div>
-            <span>Field Feeds: <strong>G1, G2, G4 Connected</strong></span>
+            <span>Data Integrity: <strong>Zero Fabrication Invariant</strong></span>
           </div>
           <div class="telemetry-chip hide-on-mobile" id="chipNetwork">
             <div class="chip-dot"></div>
-            <span>Network: <strong>CORS Reverse-Proxy Active</strong></span>
+            <span>Gateway: <strong>Active Reverse-Proxy</strong></span>
           </div>
         </div>
 
         <div class="footer-doctrine">
-          ONE CANOPY · ONE TRUTH · RIGID GOVERNANCE
+          STATE ENVIRONMENTAL SURVEILLANCE · GOVERNMENT OF MAHARASHTRA
         </div>
       </footer>
 

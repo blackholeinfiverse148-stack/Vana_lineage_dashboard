@@ -194,26 +194,26 @@ async function fetchLive() {
       data.canonical_record_id = obs.canonical_record_id || envelope.canonical_record_id || null;
 
       data.group3 = {
-        contract_version: obs.contract_version || "2.2",
-        source_identity: obs.source_identity || "Open-Meteo.com",
-        flight_id: obs.flight_id || "EXT",
-        mission_id: obs.mission_id || "TC-Z03-EXT",
-        device_id: obs.device_id || "G3-EXT-OPENMETEO-01",
-        observation_timestamp: obs.observation_timestamp || null,
-        data_state: obs.data_state || "CAPTURED",
-        synthetic_state: obs.synthetic_state || "CONTROLLED",
-        location: obs.location || { latitude: obs.latitude || 19.1288, longitude: obs.longitude || 72.9421, altitude_m: obs.altitude || 4.0 },
-        latitude: obs.latitude !== undefined ? obs.latitude : 19.1288,
-        longitude: obs.longitude !== undefined ? obs.longitude : 72.9421,
-        altitude: obs.altitude !== undefined ? obs.altitude : 4.0,
-        observation_type: obs.observation_type || "precipitation",
-        measurement: obs.measurement !== undefined ? obs.measurement : 0.1,
-        unit: obs.unit || "mm",
-        quality_state: obs.quality_state || "CAPTURED",
-        calibration_state: obs.calibration_state || "NOT_VERIFIED",
-        raw_artifact: obs.raw_artifact || null,
-        sha256: obs.sha256 || null,
-        capture_method: obs.capture_method || "external_api",
+        contract_version: obs.contract_version !== undefined ? obs.contract_version : null,
+        source_identity: obs.source_identity !== undefined ? obs.source_identity : null,
+        flight_id: obs.flight_id !== undefined ? obs.flight_id : null,
+        mission_id: obs.mission_id !== undefined ? obs.mission_id : null,
+        device_id: obs.device_id !== undefined ? obs.device_id : null,
+        observation_timestamp: obs.observation_timestamp !== undefined ? obs.observation_timestamp : null,
+        data_state: obs.data_state !== undefined ? obs.data_state : null,
+        synthetic_state: obs.synthetic_state !== undefined ? obs.synthetic_state : null,
+        location: obs.location || (obs.latitude !== undefined || obs.longitude !== undefined || obs.altitude !== undefined ? { latitude: obs.latitude ?? null, longitude: obs.longitude ?? null, altitude_m: obs.altitude ?? null } : null),
+        latitude: obs.latitude !== undefined ? obs.latitude : null,
+        longitude: obs.longitude !== undefined ? obs.longitude : null,
+        altitude: obs.altitude !== undefined ? obs.altitude : null,
+        observation_type: obs.observation_type !== undefined ? obs.observation_type : null,
+        measurement: obs.measurement !== undefined ? obs.measurement : null,
+        unit: obs.unit !== undefined ? obs.unit : null,
+        quality_state: obs.quality_state !== undefined ? obs.quality_state : null,
+        calibration_state: obs.calibration_state !== undefined ? obs.calibration_state : null,
+        raw_artifact: obs.raw_artifact !== undefined ? obs.raw_artifact : null,
+        sha256: obs.sha256 !== undefined ? obs.sha256 : null,
+        capture_method: obs.capture_method !== undefined ? obs.capture_method : null,
         provenance: prov
       };
 
@@ -263,11 +263,11 @@ async function fetchLive() {
 
         data.group2 = {
           http_status: g2Res.status,
-          context_status: json.context_status || null,
+          context_status: json.context_status !== undefined ? json.context_status : null,
           ruling: g2Ruling,
           decision: g2Ruling,
           decision_made: json.decision_made !== undefined ? json.decision_made : false,
-          decision_reason: json.decision_reason || json.reason || "MISSING_SOURCE_TIMESTAMP (Authoritative evidence threshold not met. Failing closed to ABSTAIN)",
+          decision_reason: json.decision_reason || json.reason || null,
           trace_id: json.trace_id || null,
           context_found: json.context_found !== undefined ? json.context_found : false,
           scientific_context: json.scientific_context || {},
@@ -340,15 +340,15 @@ async function fetchLive() {
         data.group4 = {
           http_status: g4Res.status,
           status: realStatus,
-          event_type: ev.event_type || json.event_type || "GOVERNED_ABSTENTION",
+          event_type: ev.event_type || json.event_type || null,
           ruling: outcomeRuling,
-          decision_action: ev.decision_action || json.decision_action || "noop",
+          decision_action: ev.decision_action || json.decision_action || null,
           abstention_record_id: ev.abstention_record_id || json.abstention_record_id || null,
           event_id: ev.event_id || json.event_id || null,
           execution_id: ev.execution_id || json.execution_id || null,
-          governance_allowed: ev.governance_allowed !== undefined ? ev.governance_allowed : true,
+          governance_allowed: ev.governance_allowed !== undefined ? ev.governance_allowed : null,
           recorded_at: json.recorded_at || ev.recorded_at || null,
-          decision_reason: json.decision_reason || ev.decision_reason || "Governed abstention enforced: ruling is ABSTAIN and decision_action is noop. No operational action taken."
+          decision_reason: json.decision_reason || ev.decision_reason || null
         };
         data.abstention_record_id = data.group4.abstention_record_id;
         g4Success = true;
@@ -413,7 +413,7 @@ function renderDashboard(data) {
   if (pinnedOid) pinnedOid.textContent = data.observation_id || OBSERVATION_ID;
   if (pinnedCrId) {
     pinnedCrId.textContent = data.canonical_record_id || "NOT VERIFIED";
-    pinnedCrId.style.color = data.canonical_record_id ? "var(--text-primary)" : "var(--crimson-bright)";
+    pinnedCrId.style.color = data.canonical_record_id ? "var(--text-primary)" : "var(--status-critical)";
   }
   if (pinnedCtxId) {
     pinnedCtxId.textContent = data.context_id !== null && data.context_id !== undefined ? String(data.context_id) : "null";
@@ -482,9 +482,9 @@ function renderFieldSummary(data) {
     thaneRecommendation = "System recommendation: <strong>Fail-closed halt active</strong>. Group 2 context service did not respond; execution blocked.";
   }
 
-  const g3Time = g3.observation_timestamp ? new Date(g3.observation_timestamp).toLocaleString("en-GB", { timeZone: "UTC" }) + " UTC" : "25 Aug 2026 11:00 UTC";
-  const measurementText = g3.measurement !== undefined ? `${g3.measurement} ${g3.unit || 'mm'}` : "0.1 mm";
-  const obsTypeText = g3.observation_type ? g3.observation_type.charAt(0).toUpperCase() + g3.observation_type.slice(1) : "Precipitation";
+  const g3Time = g3.observation_timestamp ? new Date(g3.observation_timestamp).toLocaleString("en-GB", { timeZone: "UTC" }) + " UTC" : "Not available";
+  const measurementText = (g3.measurement !== undefined && g3.measurement !== null) ? `${g3.measurement} ${g3.unit || 'mm'}` : "Not available";
+  const obsTypeText = g3.observation_type ? g3.observation_type.charAt(0).toUpperCase() + g3.observation_type.slice(1) : "";
 
   let html = `
     <!-- Top Executive Field Overview Banner -->
@@ -531,11 +531,11 @@ function renderFieldSummary(data) {
         <div class="field-metrics-strip">
           <div class="field-metric-item">
             <div class="metric-k">Latest Field Reading</div>
-            <div class="metric-v emerald">${measurementText} (${obsTypeText})</div>
+            <div class="metric-v emerald">${measurementText !== "Not available" ? `${measurementText}${obsTypeText ? ` (${obsTypeText})` : ''}` : "Not available"}</div>
           </div>
           <div class="field-metric-item">
             <div class="metric-k">Source &amp; Method</div>
-            <div class="metric-v">${g3.source_identity || 'Open-Meteo.com'} (Cloud Ingest)</div>
+            <div class="metric-v">${g3.source_identity ? `${g3.source_identity} (Cloud Ingest)` : 'Not available'}</div>
           </div>
           <div class="field-metric-item">
             <div class="metric-k">Observation Time</div>
@@ -543,7 +543,7 @@ function renderFieldSummary(data) {
           </div>
           <div class="field-metric-item">
             <div class="metric-k">Coordinates &amp; Elevation</div>
-            <div class="metric-v mono">19.1288° N, 72.9421° E (4.0m)</div>
+            <div class="metric-v mono">${(g3.latitude !== null && g3.latitude !== undefined && g3.longitude !== null && g3.longitude !== undefined) ? `${g3.latitude}° N, ${g3.longitude}° E${g3.altitude !== null && g3.altitude !== undefined ? ` (${g3.altitude}m)` : ''}` : 'Not available'}</div>
           </div>
         </div>
 
@@ -801,10 +801,10 @@ function renderMapTelemetry(data) {
   const telLoc = document.getElementById("telLocationVal");
   const telSynth = document.getElementById("telSyntheticVal");
 
-  if (telSource) telSource.textContent = isLive ? `${g3.source_identity || "Open-Meteo.com"} (CC-BY 4.0)` : "Backend Unreachable";
-  if (telMeas) telMeas.textContent = isLive ? `${g3.measurement !== undefined ? g3.measurement : 0.1} ${g3.unit || "mm"} (${g3.observation_type || "Precipitation"})` : "No telemetry";
-  if (telLoc) telLoc.textContent = `19.1288° N, 72.9421° E (${g3.altitude || 4.0}m)`;
-  if (telSynth) telSynth.textContent = isLive ? `${g3.synthetic_state || "CONTROLLED"} (Synthetic Path)` : "Unverified";
+  if (telSource) telSource.textContent = isLive && g3.source_identity ? `${g3.source_identity} (CC-BY 4.0)` : (isLive ? "Not available" : "Backend Unreachable");
+  if (telMeas) telMeas.textContent = isLive && g3.measurement !== null && g3.measurement !== undefined ? `${g3.measurement} ${g3.unit || "mm"}${g3.observation_type ? ` (${g3.observation_type})` : ''}` : "Not available";
+  if (telLoc) telLoc.textContent = (isLive && g3.latitude !== null && g3.latitude !== undefined && g3.longitude !== null && g3.longitude !== undefined) ? `${g3.latitude}° N, ${g3.longitude}° E${g3.altitude !== null && g3.altitude !== undefined ? ` (${g3.altitude}m)` : ''}` : "Not available";
+  if (telSynth) telSynth.textContent = isLive ? (g3.synthetic_state || "Not available") : "Not available";
 }
 
 // =============================================================================
@@ -829,12 +829,12 @@ function renderLineageRail(data) {
       <div class="stage-group-tag">Cross-Group Identity Invariant Bar</div>
       <div class="stage-title">Deterministic Canonical Identifiers</div>
       <div class="field-grid">
-        <div class="field-cell"><div class="field-k">observation_id</div><div class="field-v mono" style="color:var(--emerald-bright)">${data.observation_id}</div></div>
-        <div class="field-cell"><div class="field-k">canonical_record_id</div><div class="field-v mono">${data.canonical_record_id || '<span style="color:var(--crimson-bright)">NOT VERIFIED</span>'}</div></div>
-        <div class="field-cell"><div class="field-k">context_id</div><div class="field-v mono" style="color:var(--amber-bright)">${data.context_id === null ? "null" : data.context_id}</div></div>
+        <div class="field-cell"><div class="field-k">observation_id</div><div class="field-v mono" style="color:var(--status-ok)">${data.observation_id}</div></div>
+        <div class="field-cell"><div class="field-k">canonical_record_id</div><div class="field-v mono">${data.canonical_record_id || '<span style="color:var(--status-critical)">NOT VERIFIED</span>'}</div></div>
+        <div class="field-cell"><div class="field-k">context_id</div><div class="field-v mono" style="color:var(--status-warn)">${data.context_id === null ? "null" : data.context_id}</div></div>
         <div class="field-cell"><div class="field-k">abstention_record_id</div><div class="field-v mono">${data.abstention_record_id || '<span style="color:var(--text-muted)">null</span>'}</div></div>
-        <div class="field-cell"><div class="field-k">contract_version</div><div class="field-v mono">2.2</div></div>
-        <div class="field-cell"><div class="field-k">synthetic_state</div><div class="field-v"><span class="badge CONTROLLED"><span class="badge-swatch"></span>CONTROLLED</span></div></div>
+        <div class="field-cell"><div class="field-k">contract_version</div><div class="field-v mono">${g3.contract_version || 'Not available'}</div></div>
+        <div class="field-cell"><div class="field-k">synthetic_state</div><div class="field-v">${g3.synthetic_state ? `<span class="badge CONTROLLED"><span class="badge-swatch"></span>${g3.synthetic_state}</span>` : 'Not available'}</div></div>
       </div>
     </div>
 
@@ -848,21 +848,21 @@ function renderLineageRail(data) {
             <div class="stage-title">Raw Observation &amp; Third-Party License Provenance</div>
             <div class="stage-id-line mono">observation_id: <strong>${data.observation_id}</strong></div>
           </div>
-          <span class="badge CONTROLLED"><span class="badge-swatch"></span>CONTROLLED</span>
+          <span class="badge CONTROLLED"><span class="badge-swatch"></span>${g3.synthetic_state || 'CONTROLLED'}</span>
         </div>
 
         <div class="sub-stage-title">Telemetry &amp; Coordinate Grounding</div>
         <div class="field-grid">
-          <div class="field-cell"><div class="field-k">Source Identity</div><div class="field-v">${g3.source_identity || "Open-Meteo.com"}</div></div>
-          <div class="field-cell"><div class="field-k">Capture Method</div><div class="field-v mono">${g3.capture_method || "external_api"}</div></div>
-          <div class="field-cell"><div class="field-k">Observation Type</div><div class="field-v">${g3.observation_type || "precipitation"}</div></div>
-          <div class="field-cell"><div class="field-k">Measurement</div><div class="field-v mono" style="color:var(--emerald-bright);font-weight:700">${g3.measurement !== undefined ? g3.measurement : 0.1} ${g3.unit || 'mm'}</div></div>
-          <div class="field-cell"><div class="field-k">Observation Timestamp</div><div class="field-v mono">${g3.observation_timestamp || '2026-08-25 11:00:00+00:00'}</div></div>
-          <div class="field-cell"><div class="field-k">Coordinates</div><div class="field-v mono">${g3.latitude || 19.1288}° N, ${g3.longitude || 72.9421}° E</div></div>
-          <div class="field-cell"><div class="field-k">Altitude</div><div class="field-v mono">${g3.altitude || 4.0} m</div></div>
-          <div class="field-cell"><div class="field-k">Mission ID</div><div class="field-v mono">${g3.mission_id || "TC-Z03-EXT"}</div></div>
-          <div class="field-cell"><div class="field-k">Device ID</div><div class="field-v mono">${g3.device_id || "G3-EXT-OPENMETEO-01"}</div></div>
-          <div class="field-cell"><div class="field-k">Raw Checksum (SHA-256)</div><div class="field-v mono" style="font-size:9.5px">${g3.sha256 || "8d26e68328ac160f..."}</div></div>
+          <div class="field-cell"><div class="field-k">Source Identity</div><div class="field-v">${g3.source_identity || "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Capture Method</div><div class="field-v mono">${g3.capture_method || "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Observation Type</div><div class="field-v">${g3.observation_type || "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Measurement</div><div class="field-v mono" style="color:var(--status-ok);font-weight:700">${(g3.measurement !== undefined && g3.measurement !== null) ? `${g3.measurement} ${g3.unit || 'mm'}` : "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Observation Timestamp</div><div class="field-v mono">${g3.observation_timestamp || "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Coordinates</div><div class="field-v mono">${(g3.latitude !== null && g3.latitude !== undefined && g3.longitude !== null && g3.longitude !== undefined) ? `${g3.latitude}° N, ${g3.longitude}° E` : "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Altitude</div><div class="field-v mono">${g3.altitude !== null && g3.altitude !== undefined ? `${g3.altitude} m` : "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Mission ID</div><div class="field-v mono">${g3.mission_id || "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Device ID</div><div class="field-v mono">${g3.device_id || "Not available"}</div></div>
+          <div class="field-cell"><div class="field-k">Raw Checksum (SHA-256)</div><div class="field-v mono" style="font-size:9.5px">${g3.sha256 || "Not available"}</div></div>
         </div>
 
         <div class="sub-stage-title">Field Applicability &amp; Declared Gaps (§26/§49.1)</div>
@@ -883,7 +883,7 @@ function renderLineageRail(data) {
           <div>
             <div class="stage-group-tag">Group 1 · Authoritative Intake &amp; Ledger</div>
             <div class="stage-title">Canonical Record Ledger Entry</div>
-            <div class="stage-id-line mono">canonical_record_id: <strong>${data.canonical_record_id || '<span style="color:var(--crimson-bright)">UNVERIFIED</span>'}</strong></div>
+            <div class="stage-id-line mono">canonical_record_id: <strong>${data.canonical_record_id || '<span style="color:var(--status-critical)">UNVERIFIED</span>'}</strong></div>
           </div>
           <span class="badge ${g1Failed ? 'BLOCKED' : 'LIVE'}"><span class="badge-swatch"></span>${g1Failed ? 'FAILED' : 'RETRIEVED'}</span>
         </div>
@@ -896,7 +896,7 @@ function renderLineageRail(data) {
           </div>
         ` : `
           <div class="field-grid">
-            <div class="field-cell"><div class="field-k">Retrieval Status</div><div class="field-v mono" style="color:var(--emerald-bright)">${g1.retrieval_status || "RETRIEVED"}</div></div>
+            <div class="field-cell"><div class="field-k">Retrieval Status</div><div class="field-v mono" style="color:var(--status-ok)">${g1.retrieval_status || "Not available"}</div></div>
             <div class="field-cell"><div class="field-k">Trace ID</div><div class="field-v mono">${g1.trace_id || 'null'}</div></div>
             <div class="field-cell"><div class="field-k">Storage State</div><div class="field-v mono">PERSISTED_AUTHORITATIVE</div></div>
           </div>
@@ -912,7 +912,7 @@ function renderLineageRail(data) {
           <div>
             <div class="stage-group-tag">Group 2 · Botanical Context &amp; Rulings</div>
             <div class="stage-title">Scientific Context Resolution &amp; Decision</div>
-            <div class="stage-id-line mono">context_id: <span style="color:var(--amber-bright)">${data.context_id === null ? "null" : data.context_id}</span></div>
+            <div class="stage-id-line mono">context_id: <span style="color:var(--status-warn)">${data.context_id === null ? "null" : data.context_id}</span></div>
           </div>
           <span class="badge ${g2Failed ? 'BLOCKED' : 'CONTROLLED'}"><span class="badge-swatch"></span>${g2Failed ? (g2.skipped ? 'SKIPPED' : 'FAILED') : g2.ruling || 'ABSTAIN'}</span>
         </div>
@@ -927,14 +927,14 @@ function renderLineageRail(data) {
           <div class="decision-block ABSTAIN">
             <div class="decision-label">Group 2 Decision · ruling: ${g2.ruling || 'ABSTAIN'}</div>
             <div class="decision-outcome">ABSTAINED - NO OPERATIONAL ACTION AUTHORIZED</div>
-            <div class="decision-reason">${g2.decision_reason || "MISSING_SOURCE_TIMESTAMP (Authoritative evidence threshold not met. Failing closed to ABSTAIN)"}</div>
+            <div class="decision-reason">${g2.decision_reason || "Not available"}</div>
           </div>
 
           <div class="field-grid" style="margin-top:10px">
             <div class="field-cell"><div class="field-k">HTTP Status</div><div class="field-v mono">${g2.http_status || 200}</div></div>
             <div class="field-cell"><div class="field-k">Evidence State</div><div class="field-v na-field">N/A (Permanently out of scope)</div></div>
-            <div class="field-cell"><div class="field-k">Action Eligibility</div><div class="field-v mono">${g2.action_eligibility}</div></div>
-            <div class="field-cell"><div class="field-k">Abstention Required</div><div class="field-v mono" style="color:var(--amber-bright)">${g2.abstention_required}</div></div>
+            <div class="field-cell"><div class="field-k">Action Eligibility</div><div class="field-v mono">${g2.action_eligibility !== undefined && g2.action_eligibility !== null ? g2.action_eligibility : "Not available"}</div></div>
+            <div class="field-cell"><div class="field-k">Abstention Required</div><div class="field-v mono" style="color:var(--status-warn)">${g2.abstention_required !== undefined && g2.abstention_required !== null ? g2.abstention_required : "Not available"}</div></div>
           </div>
         `}
       </div>
@@ -961,16 +961,16 @@ function renderLineageRail(data) {
           </div>
         ` : `
           <div class="decision-block ABSTAIN">
-            <div class="decision-label">Governed Ruling: ${g4.ruling || 'ABSTAIN'} · Decision Action: ${g4.decision_action || 'noop'}</div>
+            <div class="decision-label">Governed Ruling: ${g4.ruling || 'Not available'} · Decision Action: ${g4.decision_action || 'Not available'}</div>
             <div class="decision-outcome">GOVERNED ABSTENTION ENFORCED (NO EFFECT)</div>
-            <div class="decision-reason">${g4.decision_reason || "Governed abstention enforced: ruling is ABSTAIN and decision_action is noop. No operational action taken."}</div>
+            <div class="decision-reason">${g4.decision_reason || "Not available"}</div>
           </div>
 
           <div class="field-grid" style="margin-top:10px">
-            <div class="field-cell"><div class="field-k">Ruling</div><div class="field-v mono" style="color:var(--amber-bright)">${g4.ruling || "ABSTAIN"}</div></div>
-            <div class="field-cell"><div class="field-k">Decision Action</div><div class="field-v mono">${g4.decision_action || "noop"}</div></div>
-            <div class="field-cell"><div class="field-k">Governance Allowed</div><div class="field-v mono">${g4.governance_allowed !== undefined ? g4.governance_allowed : true}</div></div>
-            <div class="field-cell"><div class="field-k">Recorded Timestamp</div><div class="field-v mono" style="font-size:10px">${g4.recorded_at || 'null'}</div></div>
+            <div class="field-cell"><div class="field-k">Ruling</div><div class="field-v mono" style="color:var(--status-warn)">${g4.ruling || "Not available"}</div></div>
+            <div class="field-cell"><div class="field-k">Decision Action</div><div class="field-v mono">${g4.decision_action || "Not available"}</div></div>
+            <div class="field-cell"><div class="field-k">Governance Allowed</div><div class="field-v mono">${g4.governance_allowed !== null && g4.governance_allowed !== undefined ? g4.governance_allowed : "Not confirmed"}</div></div>
+            <div class="field-cell"><div class="field-k">Recorded Timestamp</div><div class="field-v mono" style="font-size:10px">${g4.recorded_at || 'Not available'}</div></div>
           </div>
         `}
       </div>
@@ -991,8 +991,10 @@ function renderGovernanceMatrix(data) {
   if (!grid) return;
 
   if (reasonEl) {
-    if (g4 && !g4.failed) {
-      reasonEl.textContent = g4.decision_reason || "Authoritative evidence threshold not met (Missing Source Timestamp). Failing closed to ABSTAIN. Execution halted with zero side-effects.";
+    if (g4 && !g4.failed && g4.decision_reason) {
+      reasonEl.textContent = g4.decision_reason;
+    } else if (g4 && !g4.failed) {
+      reasonEl.textContent = "Not available";
     } else {
       reasonEl.textContent = "Pipeline failed upstream. Strict fail-closed guardrail active: zero operational side-effects dispatched.";
     }
@@ -1000,15 +1002,15 @@ function renderGovernanceMatrix(data) {
 
   grid.innerHTML = `
     <div class="field-cell"><div class="field-k">Observation ID</div><div class="field-v mono">${data.observation_id}</div></div>
-    <div class="field-cell"><div class="field-k">Canonical Record ID</div><div class="field-v mono">${data.canonical_record_id || '<span style="color:var(--crimson-bright)">UNVERIFIED</span>'}</div></div>
-    <div class="field-cell"><div class="field-k">Context ID (Preserved)</div><div class="field-v mono" style="color:var(--amber-bright)">${data.context_id === null ? "null" : data.context_id}</div></div>
+    <div class="field-cell"><div class="field-k">Canonical Record ID</div><div class="field-v mono">${data.canonical_record_id || '<span style="color:var(--status-critical)">UNVERIFIED</span>'}</div></div>
+    <div class="field-cell"><div class="field-k">Context ID (Preserved)</div><div class="field-v mono" style="color:var(--status-warn)">${data.context_id === null ? "null" : data.context_id}</div></div>
     <div class="field-cell"><div class="field-k">Abstention Record ID</div><div class="field-v mono">${data.abstention_record_id || '<span style="color:var(--text-muted)">null</span>'}</div></div>
-    <div class="field-cell"><div class="field-k">Group 2 Ruling</div><div class="field-v mono">${g2.ruling || (g2.failed ? "FAILED" : "ABSTAIN")}</div></div>
-    <div class="field-cell"><div class="field-k">Group 4 Ruling</div><div class="field-v mono">${g4.ruling || (g4.failed ? "FAILED" : "ABSTAIN")}</div></div>
-    <div class="field-cell"><div class="field-k">Decision Action</div><div class="field-v mono" style="color:var(--amber-bright)">${g4.decision_action || "noop"}</div></div>
-    <div class="field-cell"><div class="field-k">Action Eligibility</div><div class="field-v mono">${g2.action_eligibility !== undefined ? g2.action_eligibility : false}</div></div>
-    <div class="field-cell"><div class="field-k">Abstention Required</div><div class="field-v mono" style="color:var(--amber-bright)">${g2.abstention_required !== undefined ? g2.abstention_required : true}</div></div>
-    <div class="field-cell"><div class="field-k">Fail-Closed Invariant</div><div class="field-v mono" style="color:var(--emerald-bright)">ENFORCED</div></div>
+    <div class="field-cell"><div class="field-k">Group 2 Ruling</div><div class="field-v mono">${g2.ruling || (g2.failed ? "FAILED" : "Not available")}</div></div>
+    <div class="field-cell"><div class="field-k">Group 4 Ruling</div><div class="field-v mono">${g4.ruling || (g4.failed ? "FAILED" : "Not available")}</div></div>
+    <div class="field-cell"><div class="field-k">Decision Action</div><div class="field-v mono" style="color:var(--status-warn)">${g4.decision_action || (g4.failed ? "FAILED" : "Not available")}</div></div>
+    <div class="field-cell"><div class="field-k">Action Eligibility</div><div class="field-v mono">${g2.action_eligibility !== undefined && g2.action_eligibility !== null ? g2.action_eligibility : "Not available"}</div></div>
+    <div class="field-cell"><div class="field-k">Abstention Required</div><div class="field-v mono" style="color:var(--status-warn)">${g2.abstention_required !== undefined && g2.abstention_required !== null ? g2.abstention_required : "Not available"}</div></div>
+    <div class="field-cell"><div class="field-k">Fail-Closed Invariant</div><div class="field-v mono" style="color:var(--status-ok)">ENFORCED</div></div>
   `;
 }
 
@@ -1044,8 +1046,8 @@ function renderScientificContext(data) {
     <div class="field-cell"><div class="field-k">Sensor Classification</div><div class="field-v">Open-Meteo Cloud Precipitation API</div></div>
     <div class="field-cell"><div class="field-k">Evidence State Schema</div><div class="field-v na-field">N/A (Permanently out of scope)</div></div>
     ${dynamicCells}
-    <div class="field-cell"><div class="field-k">Ecological Indicators DOI</div><div class="field-v"><a href="https://doi.org/10.1016/j.ecolind.2021.107890" target="_blank" style="color:var(--emerald-bright)">10.1016/j.ecolind.2021.107890</a></div></div>
-    <div class="field-cell"><div class="field-k">Spatial Benchmark DOI</div><div class="field-v"><a href="https://doi.org/10.1038/s41597-020-00780-w" target="_blank" style="color:var(--emerald-bright)">10.1038/s41597-020-00780-w</a></div></div>
+    <div class="field-cell"><div class="field-k">Ecological Indicators DOI</div><div class="field-v"><a href="https://doi.org/10.1016/j.ecolind.2021.107890" target="_blank" style="color:var(--brand)">10.1016/j.ecolind.2021.107890</a></div></div>
+    <div class="field-cell"><div class="field-k">Spatial Benchmark DOI</div><div class="field-v"><a href="https://doi.org/10.1038/s41597-020-00780-w" target="_blank" style="color:var(--brand)">10.1038/s41597-020-00780-w</a></div></div>
     <div class="field-cell"><div class="field-k">Authoritative Timestamp Check</div><div class="field-v gap">GAP (Threshold not satisfied)</div></div>
   `;
 }
@@ -1179,7 +1181,7 @@ function acknowledgeAlert(id) {
 async function triggerReplayVerification() {
   const logEl = document.getElementById("replayProofLog");
   if (logEl) {
-    logEl.innerHTML = `<span style="color:var(--amber-bright)">[REPLAY RUNNING] Executing fresh live API sequence across Group 1 -> 2 -> 4...</span>`;
+    logEl.innerHTML = `<span style="color:var(--status-warn)">[REPLAY RUNNING] Executing fresh live API sequence across Group 1 -> 2 -> 4...</span>`;
   }
   switchStageView("replay");
 
@@ -1231,11 +1233,11 @@ async function triggerReplayVerification() {
 
   if (logEl) {
     logEl.innerHTML = `
-      <div style="color:${allPassed ? 'var(--emerald-bright)' : 'var(--crimson-bright)'}">${allPassed ? '✓ REPLAY VERIFICATION COMPLETE' : '⚠ REPLAY INTEGRITY WARNING'} at ${ts}</div>
+      <div style="color:${allPassed ? 'var(--status-ok)' : 'var(--status-critical)'}">${allPassed ? '✓ REPLAY VERIFICATION COMPLETE' : '⚠ REPLAY INTEGRITY WARNING'} at ${ts}</div>
       <div>--------------------------------------------------------------------------------</div>
       ${invariants.map(inv => `<div>* Invariant (${inv.field}): ${inv.curr} [${inv.match ? 'MATCH: PRESERVED' : 'MISMATCH / UNVERIFIED'}]</div>`).join("")}
       <div>--------------------------------------------------------------------------------</div>
-      <div style="color:${allPassed ? 'var(--emerald-bright)' : 'var(--amber-bright)'}">
+      <div style="color:${allPassed ? 'var(--status-ok)' : 'var(--status-warn)'}">
         ${allPassed ? 'CONCLUSION: Lineage reproduction is 100% deterministic and invariant across replays.' : 'CONCLUSION: One or more invariants could not be verified live.'}
       </div>
     `;
@@ -1258,9 +1260,9 @@ function renderReplayDiff(data) {
 
   tbody.innerHTML = invariants.map(inv => `
     <tr>
-      <td class="mono" style="font-weight:700;color:#FFFFFF">${inv.field}</td>
+      <td class="mono" style="font-weight:700;color:var(--ink)">${inv.field}</td>
       <td class="mono" style="color:var(--text-secondary)">${inv.base}</td>
-      <td class="mono" style="color:${inv.match ? 'var(--emerald-bright)' : 'var(--crimson-bright)'}">${inv.curr}</td>
+      <td class="mono" style="color:${inv.match ? 'var(--status-ok)' : 'var(--status-critical)'}">${inv.curr}</td>
       <td>
         <span class="status-check-pill ${inv.match ? 'pass' : 'fail'}">
           ${inv.match ? `
@@ -1292,7 +1294,7 @@ function selectRegion(zoneKey) {
 }
 
 // =============================================================================
-// LEAFLET ACCURATE GEOSPATIAL MAP ENGINE (OPTION B)
+// LEAFLET ACCURATE GEOSPATIAL MAP ENGINE
 // =============================================================================
 function initLeafletMap() {
   const mapEl = document.getElementById("leafletMap");
@@ -1343,11 +1345,12 @@ function initLeafletMap() {
 
       const marker = L.marker([z.lat, z.lon], { icon: customIcon }).addTo(leafletMap);
 
+      const g3 = currentRuntimeData.group3 || {};
       const popupContent = `
         <div class="leaflet-custom-popup">
           <div class="popup-title">${z.name}</div>
           <div class="popup-id mono">${z.id}</div>
-          <div class="popup-status ${isLive ? 'live' : 'pending'}">${isLive ? 'CONFIRMED LIVE (0.1 mm)' : 'PENDING UPSTREAM'}</div>
+          <div class="popup-status ${isLive ? 'live' : 'pending'}">${isLive ? `CONFIRMED LIVE${(g3.measurement !== undefined && g3.measurement !== null) ? ` (${g3.measurement} ${g3.unit || 'mm'})` : ''}` : 'PENDING UPSTREAM'}</div>
           <div class="popup-note">${isLive ? 'Live Open-Meteo Ingestion Verified' : z.note}</div>
         </div>
       `;
@@ -1397,6 +1400,191 @@ function setMapDisplayMode(mode) {
 }
 
 // =============================================================================
+// PRIORITY 2: SCOPED KAVY MASTERDB DATA REGISTRY ENGINE
+// Strict Read-Only Lookup & Honest Error Parsing
+// =============================================================================
+async function lookupKavyData() {
+  const inputEl = document.getElementById("kavyLookupId");
+  const baseUrlEl = document.getElementById("kavyBaseUrl");
+  const resultContainer = document.getElementById("kavyResultContainer");
+  if (!inputEl || !resultContainer) return;
+
+  const id = inputEl.value.trim();
+  if (!id) {
+    resultContainer.innerHTML = `
+      <div class="decision-block ABSTAIN" style="margin-top:10px">
+        <div class="decision-label">Input Required</div>
+        <div class="decision-outcome">ENTER DATASET OR PACKAGE ID</div>
+        <div class="decision-reason">Please specify an identifier to query live KAVY status. Zero defaults are pre-filled.</div>
+      </div>
+    `;
+    return;
+  }
+
+  const isProxied = location.port === "8080" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  let baseUrl = baseUrlEl && baseUrlEl.value.trim() ? baseUrlEl.value.trim() : (isProxied ? "/proxy/kavy" : "http://127.0.0.1:8000");
+  if (baseUrl.endsWith("/")) baseUrl = baseUrl.slice(0, -1);
+
+  resultContainer.innerHTML = `
+    <div style="padding:16px;color:var(--text-secondary);font-size:12px;display:flex;align-items:center;gap:8px">
+      <div class="pulse-dot" style="background:var(--brand)"></div>
+      <span>Querying live KAVY MasterDB endpoints (GET /status/${encodeURIComponent(id)} &amp; GET /tantra/packages/${encodeURIComponent(id)}/runtime)...</span>
+    </div>
+  `;
+
+  let datasetStatusRes = null;
+  let datasetStatusData = null;
+  let datasetStatusErr = null;
+
+  let packageRuntimeRes = null;
+  let packageRuntimeData = null;
+  let packageRuntimeErr = null;
+
+  // 1. GET /status/{dataset_id}
+  try {
+    const res = await fetch(`${baseUrl}/status/${encodeURIComponent(id)}`, {
+      headers: { "Accept": "application/json" }
+    });
+    datasetStatusRes = res;
+    const json = await res.json();
+    if (res.ok) {
+      datasetStatusData = json;
+    } else {
+      datasetStatusErr = (json && json.error && json.error.message) ? json.error.message : (json.message || `HTTP ${res.status}`);
+    }
+  } catch (e) {
+    datasetStatusErr = `Network request failed: ${e.message}`;
+  }
+
+  // 2. GET /tantra/packages/{package_id}/runtime
+  try {
+    const res = await fetch(`${baseUrl}/tantra/packages/${encodeURIComponent(id)}/runtime`, {
+      headers: { "Accept": "application/json" }
+    });
+    packageRuntimeRes = res;
+    const json = await res.json();
+    if (res.ok) {
+      packageRuntimeData = json;
+    } else {
+      packageRuntimeErr = (json && json.error && json.error.message) ? json.error.message : (json.message || `HTTP ${res.status}`);
+    }
+  } catch (e) {
+    packageRuntimeErr = `Network request failed: ${e.message}`;
+  }
+
+  // Render Honest Results
+  const statusOk = datasetStatusData && !datasetStatusErr;
+  const runtimeOk = packageRuntimeData && !packageRuntimeErr;
+
+  const pkg = (packageRuntimeData && packageRuntimeData.package) || {};
+  const lineage = (packageRuntimeData && packageRuntimeData.lineage) || {};
+  const retrieval = (packageRuntimeData && packageRuntimeData.retrieval_readiness) || {};
+  const cert = (packageRuntimeData && packageRuntimeData.certification_status) || {};
+
+  let html = `
+    <!-- Top Query Summary Bar -->
+    <div class="stage-card" style="margin-bottom:12px">
+      <div class="stage-card-head">
+        <div>
+          <div class="stage-group-tag">KAVY MasterDB Registry Lookup</div>
+          <div class="stage-title">Query Results for Record: <span class="mono">${id}</span></div>
+          <div class="stage-id-line mono">Base Endpoint: <strong>${baseUrl}</strong></div>
+        </div>
+        <span class="badge ${statusOk || runtimeOk ? 'LIVE' : 'BLOCKED'}">
+          <span class="badge-swatch"></span>${statusOk || runtimeOk ? 'RECORD REACHABLE' : 'UNREACHABLE / NOT FOUND'}
+        </span>
+      </div>
+    </div>
+
+    <div class="field-zones-grid">
+
+      <!-- Sub-section 1: Dataset Status (GET /status/{id}) -->
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <div class="stage-group-tag">Endpoint: GET /status/{dataset_id}</div>
+          <div class="stage-title">Dataset Status &amp; Integrity</div>
+        </div>
+        ${datasetStatusErr ? `
+          <div class="decision-block BLOCK">
+            <div class="decision-label">Status Lookup Failure</div>
+            <div class="decision-outcome">HONEST FAILURE / 404</div>
+            <div class="decision-reason">${datasetStatusErr}</div>
+          </div>
+        ` : `
+          <div class="field-grid">
+            <div class="field-cell"><div class="field-k">State</div><div class="field-v mono" style="color:var(--status-ok)">${datasetStatusData.state !== undefined ? datasetStatusData.state : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Classification</div><div class="field-v mono">${datasetStatusData.classification !== undefined ? datasetStatusData.classification : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Integrity Score</div><div class="field-v mono" style="color:var(--brand);font-weight:700">${datasetStatusData.integrity_score !== undefined ? datasetStatusData.integrity_score : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Eligible for MasterDB</div><div class="field-v mono">${datasetStatusData.eligible_for_masterdb !== undefined ? String(datasetStatusData.eligible_for_masterdb) : 'Not available'}</div></div>
+          </div>
+        `}
+      </div>
+
+      <!-- Sub-section 2: Package Metadata (GET /tantra/packages/{id}/runtime) -->
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <div class="stage-group-tag">Endpoint: GET /tantra/packages/{id}/runtime (Package)</div>
+          <div class="stage-title">Package Lifecycle &amp; State</div>
+        </div>
+        ${packageRuntimeErr ? `
+          <div class="decision-block BLOCK">
+            <div class="decision-label">Runtime Package Lookup Failure</div>
+            <div class="decision-outcome">HONEST FAILURE / 404</div>
+            <div class="decision-reason">${packageRuntimeErr}</div>
+          </div>
+        ` : `
+          <div class="field-grid">
+            <div class="field-cell"><div class="field-k">Package ID</div><div class="field-v mono">${pkg.package_id !== undefined ? pkg.package_id : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Package Name</div><div class="field-v">${pkg.name !== undefined ? pkg.name : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Version</div><div class="field-v mono">${pkg.version !== undefined ? pkg.version : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Package Status</div><div class="field-v mono" style="color:var(--status-ok)">${pkg.status !== undefined ? pkg.status : 'Not available'}</div></div>
+          </div>
+        `}
+      </div>
+
+      <!-- Sub-section 3: Lineage Sub-section -->
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <div class="stage-group-tag">Endpoint: GET /tantra/packages/{id}/runtime (Lineage)</div>
+          <div class="stage-title">Lineage &amp; Provenance</div>
+        </div>
+        ${packageRuntimeErr ? `
+          <div class="field-cell"><div class="field-k">Lineage Information</div><div class="field-v na-field">Not available (Upstream package lookup failed)</div></div>
+        ` : `
+          <div class="field-grid">
+            <div class="field-cell"><div class="field-k">Upstream IDs</div><div class="field-v mono">${lineage.upstream_ids !== undefined ? JSON.stringify(lineage.upstream_ids) : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Checksum / Hash</div><div class="field-v mono" style="font-size:10px">${lineage.hash || lineage.checksum || 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Timestamp</div><div class="field-v mono">${lineage.timestamp !== undefined ? lineage.timestamp : 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Parent Count</div><div class="field-v mono">${Array.isArray(lineage.upstream_ids) ? lineage.upstream_ids.length : 'Not available'}</div></div>
+          </div>
+        `}
+      </div>
+
+      <!-- Sub-section 4: Certification & Readiness Sub-section -->
+      <div class="stage-card">
+        <div class="stage-card-head">
+          <div class="stage-group-tag">Endpoint: GET /tantra/packages/{id}/runtime (Certification &amp; Readiness)</div>
+          <div class="stage-title">Certification Status &amp; Retrieval Readiness</div>
+        </div>
+        ${packageRuntimeErr ? `
+          <div class="field-cell"><div class="field-k">Certification Information</div><div class="field-v na-field">Not available (Upstream package lookup failed)</div></div>
+        ` : `
+          <div class="field-grid">
+            <div class="field-cell"><div class="field-k">Certification Status</div><div class="field-v mono" style="color:var(--brand);font-weight:700">${cert.status || cert.certification_status || 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Certified By</div><div class="field-v">${cert.certified_by || 'Not available'}</div></div>
+            <div class="field-cell"><div class="field-k">Retrieval Readiness</div><div class="field-v mono" style="color:var(--status-ok)">${retrieval.readiness_state || (retrieval.ready !== undefined ? String(retrieval.ready) : 'Not available')}</div></div>
+            <div class="field-cell"><div class="field-k">Retrieval URI</div><div class="field-v mono" style="font-size:10px">${retrieval.uri || 'Not available'}</div></div>
+          </div>
+        `}
+      </div>
+
+    </div>
+  `;
+
+  resultContainer.innerHTML = html;
+}
+
+// =============================================================================
 // UI NAVIGATION & TAB SWITCHING (SYNCHRONIZED DESKTOP & MOBILE)
 // =============================================================================
 function switchStageView(viewName) {
@@ -1408,6 +1596,7 @@ function switchStageView(viewName) {
     lineage: { el: "viewLineage", tab: "tabBtnLineage", title: "Lineage Rail & Trace Audit (G3 -> G1 -> G2 -> G4)" },
     governance: { el: "viewGovernance", tab: "tabBtnGovernance", title: "Automated Governance Ruling & Execution Gate" },
     scientific: { el: "viewScientific", tab: "tabBtnScientific", title: "Botanical Context & Dynamic Sensor Context Fields" },
+    dataRegistry: { el: "viewDataRegistry", tab: "tabBtnDataRegistry", title: "KAVY MasterDB Data Registry & Certification Surface" },
     replay: { el: "viewReplay", tab: "tabBtnReplay", title: "Deterministic Lineage Replay Engine" },
     evidencePack: { el: "viewEvidencePack", tab: "tabBtnEvidencePack", title: "Group 3 Source Evidence Pack v2.2" }
   };
@@ -1425,7 +1614,7 @@ function switchStageView(viewName) {
   const titleEl = document.getElementById("stageSubtitleText");
 
   if (selEl) {
-    selEl.style.display = viewName === "map" || viewName === "evidencePack" || viewName === "fieldSummary" ? "flex" : "block";
+    selEl.style.display = viewName === "map" || viewName === "evidencePack" || viewName === "fieldSummary" || viewName === "dataRegistry" ? "flex" : "block";
   }
   if (selTab) selTab.classList.add("active");
   if (titleEl) titleEl.textContent = selected.title;
@@ -1453,6 +1642,7 @@ function switchMainTab(viewKey, navItem) {
     regionalView: "bnavOverview",
     lineageView: "bnavLineage",
     governanceView: "bnavGovernance",
+    dataRegistryView: "bnavDataRegistry",
     replayView: "bnavReplay"
   };
   const bnavId = bnavMap[viewKey];
@@ -1466,6 +1656,7 @@ function switchMainTab(viewKey, navItem) {
     mapView: "map",
     lineageView: "lineage",
     governanceView: "governance",
+    dataRegistryView: "dataRegistry",
     regionalView: "map",
     scientificView: "scientific",
     evidencePackView: "evidencePack",
@@ -1490,8 +1681,8 @@ function focusAlerts(navItem) {
   const alertsPanel = document.getElementById("alertsPanel");
   if (alertsPanel) {
     alertsPanel.scrollIntoView({ behavior: "smooth" });
-    alertsPanel.style.boxShadow = "0 0 20px rgba(245, 158, 11, 0.4)";
-    setTimeout(() => { alertsPanel.style.boxShadow = ""; }, 1500);
+    alertsPanel.style.outline = "2px solid var(--status-warn)";
+    setTimeout(() => { alertsPanel.style.outline = ""; }, 1500);
   }
 
   toggleSidebar(false);
