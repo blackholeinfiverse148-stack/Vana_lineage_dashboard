@@ -2111,123 +2111,6 @@ h1, h2, h3, h4, .title-font {
 }
 
 /* ==========================================================================
-   PRIORITY 2: KAVY DATA REGISTRY TAB STYLING
-   ========================================================================== */
-.data-registry-wrapper {
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.kavy-lookup-bar {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.kavy-lookup-title {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.kavy-lookup-desc {
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 1.35;
-}
-
-.kavy-input-box {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 4px;
-}
-
-.kavy-input-field {
-  flex: 1;
-  min-width: 240px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 7px 10px;
-  font-size: 12px;
-  color: var(--ink);
-  font-family: 'JetBrains Mono', monospace;
-  outline: none;
-  transition: border-color var(--transition-fast);
-}
-
-.kavy-input-field:focus {
-  border-color: var(--brand);
-}
-
-.btn-kavy-lookup {
-  background: var(--brand);
-  color: #FFFFFF;
-  border: 1px solid var(--brand);
-  padding: 7px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background var(--transition-fast);
-  white-space: nowrap;
-}
-
-.btn-kavy-lookup:hover {
-  background: #B37122;
-}
-
-.kavy-results-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.kavy-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.kavy-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 6px;
-}
-
-.kavy-card-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.kavy-endpoint-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: var(--brand);
-  background: var(--brand-soft);
-  padding: 1px 5px;
-  border-radius: var(--radius-sm);
-}
-
-/* ==========================================================================
    RAW JSON INSPECTOR & EVIDENCE PACK
    ========================================================================== */
 .json-viewer-container {
@@ -2386,9 +2269,6 @@ h1, h2, h3, h4, .title-font {
     grid-template-columns: 1fr 320px;
   }
   .field-zones-grid {
-    grid-template-columns: 1fr;
-  }
-  .kavy-results-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -138,6 +138,53 @@ async function loadDefaultEvidencePack() {
 }
 
 // =============================================================================
+// API CONFIGURATION GUARD
+// Fail loudly if config.js was not loaded before app.js.
+// =============================================================================
+if (!window.VANA_CONFIG) {
+  throw new Error(
+    "[VANA] FATAL: window.VANA_CONFIG is not defined. " +
+    "Ensure config.js is loaded before app.js in index.html."
+  );
+}
+
+// =============================================================================
+// CENTRALIZED FETCH HELPER — TIMEOUT + ERROR NORMALISATION
+// All live API calls go through vanaFetch(). Never call fetch() directly
+// for backend endpoints. This enforces a consistent timeout, logs every
+// request, and surfaces network failures as explicit Error objects so the
+// fail-closed pipeline can handle them uniformly.
+// =============================================================================
+/**
+ * Wrapper around fetch() that:
+ *  - Applies a global AbortController-based timeout (VANA_CONFIG.REQUEST_TIMEOUT_MS)
+ *  - Logs every outbound request
+ *  - Rejects with a descriptive Error on timeout or network failure
+ *
+ * @param {string} url
+ * @param {RequestInit} [options]
+ * @returns {Promise<Response>}
+ */
+async function vanaFetch(url, options = {}) {
+  const timeoutMs = (window.VANA_CONFIG && window.VANA_CONFIG.REQUEST_TIMEOUT_MS) || 10000;
+  const controller = new AbortController();
+  const timerId = setTimeout(() => controller.abort(), timeoutMs);
+
+  console.log(`[VANA Fetch] ${options.method || "GET"} ${url}`);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return response;
+  } catch (err) {
+    if (err.name === "AbortError") {
+      throw new Error(`Request timed out after ${timeoutMs}ms: ${url}`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timerId);
+  }
+}
+
+// =============================================================================
 // LIVE RUNTIME PIPELINE (GROUP 1 -> GROUP 2 -> GROUP 4)
 // STRICT FAIL-CLOSED ZERO-FABRICATION LOGIC
 // =============================================================================
@@ -149,11 +196,12 @@ async function fetchLive() {
   if (statusText) statusText.textContent = "Connecting Live APIs...";
   if (statusPill) statusPill.className = "system-status-pill warn";
 
-  // Use proxy path if hosted on port 8080 or localhost, else direct URLs
-  const isProxied = location.port === "8080" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
-  const g1Base = isProxied ? "/proxy/g1" : "http://163.128.209.18:8013";
-  const g2Endpoint = isProxied ? "/proxy/g2/api/group2/context/resolve" : "https://niyantran.blackholeinfiverse.com/api/group2/context/resolve";
-  const g4Endpoint = isProxied ? "/proxy/g4/vana/execute" : "http://163.128.209.18:8010/vana/execute";
+  // Read endpoints from VANA_CONFIG (defined in config.js).
+  // /proxy/* routes are handled by the Python dev server locally and by
+  // Vercel rewrites in production — no environment sniffing required.
+  const g1Base = window.VANA_CONFIG.G1_BASE;
+  const g2Endpoint = window.VANA_CONFIG.G2_ENDPOINT;
+  const g4Endpoint = window.VANA_CONFIG.G4_ENDPOINT;
 
   const data = {
     observation_id: OBSERVATION_ID,
@@ -175,7 +223,7 @@ async function fetchLive() {
   // ---------------------------------------------------------------------------
   try {
     console.log("[VANA Live Path] Querying Group 1:", `${g1Base}/observations/${OBSERVATION_ID}`);
-    const g1Res = await fetch(`${g1Base}/observations/${encodeURIComponent(OBSERVATION_ID)}`, {
+    const g1Res = await vanaFetch(`${g1Base}/observations/${encodeURIComponent(OBSERVATION_ID)}`, {
       headers: { "Accept": "application/json" }
     });
 
@@ -247,7 +295,7 @@ async function fetchLive() {
     try {
       console.log("[VANA Live Path] Querying Group 2:", g2Endpoint);
       const reqBody = { observation_id: OBSERVATION_ID };
-      const g2Res = await fetch(g2Endpoint, {
+      const g2Res = await vanaFetch(g2Endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reqBody)
@@ -322,7 +370,7 @@ async function fetchLive() {
         action_request: g2ActionRequest
       };
 
-      const g4Res = await fetch(g4Endpoint, {
+      const g4Res = await vanaFetch(g4Endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(g4Payload),
@@ -1106,11 +1154,12 @@ const OPERATIONAL_ALERTS = [
     severity: "INFO",
     category: "RUNTIME_GATEWAY",
     title: "CORS Reverse-Proxy Gateway Active on Port 8080",
-    description: "Direct runtime calls to Group 1, Group 2, and Group 4 interconnected seamlessly with zero browser cross-origin or mixed-content impediments.",
+    description: "All runtime calls routed through /proxy/* gateway (Python server locally, Vercel rewrites in production). No direct backend IPs in frontend code. Timeout enforced at 10s per request.",
     timestamp: "Current Session",
     actionable: true
   }
 ];
+window.OPERATIONAL_ALERTS = OPERATIONAL_ALERTS;
 
 function renderAlertsFeed(data) {
   const container = document.getElementById("alertsContainer");
@@ -1294,83 +1343,33 @@ function selectRegion(zoneKey) {
 }
 
 // =============================================================================
-// LEAFLET ACCURATE GEOSPATIAL MAP ENGINE
+// =============================================================================
+// LEAFLET ACCURATE GEOSPATIAL MAP ENGINE (BRIDGED TO VanaGeoEngine)
 // =============================================================================
 function initLeafletMap() {
-  const mapEl = document.getElementById("leafletMap");
-  if (!mapEl || typeof L === "undefined") return;
-
-  try {
-    leafletMap = L.map("leafletMap", {
-      center: [19.15, 73.0],
-      zoom: 9.5,
-      zoomControl: true,
-      attributionControl: false
-    });
-
-    // Dark-themed tiles via CartoDB Dark Matter with OpenStreetMap fallback
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-      maxZoom: 18,
-      subdomains: "abcd"
-    }).addTo(leafletMap);
-
-    // Attribution
-    L.control.attribution({ position: "bottomright", prefix: false })
-      .addAttribution('&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>')
-      .addTo(leafletMap);
-
-    // Plot all 6 real regional markers
-    Object.keys(REGIONAL_ZONES).forEach(key => {
-      const z = REGIONAL_ZONES[key];
-      const isLive = z.status === "CONFIRMED_LIVE";
-
-      const markerHtml = isLive ? `
-        <div class="custom-leaflet-marker live">
-          <div class="marker-pulse-ring"></div>
-          <div class="marker-core-dot"></div>
-        </div>
-      ` : `
-        <div class="custom-leaflet-marker pending">
-          <div class="marker-pending-dot"></div>
-        </div>
-      `;
-
-      const customIcon = L.divIcon({
-        className: "custom-leaflet-icon-wrapper",
-        html: markerHtml,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-        popupAnchor: [0, -14]
-      });
-
-      const marker = L.marker([z.lat, z.lon], { icon: customIcon }).addTo(leafletMap);
-
-      const g3 = currentRuntimeData.group3 || {};
-      const popupContent = `
-        <div class="leaflet-custom-popup">
-          <div class="popup-title">${z.name}</div>
-          <div class="popup-id mono">${z.id}</div>
-          <div class="popup-status ${isLive ? 'live' : 'pending'}">${isLive ? `CONFIRMED LIVE${(g3.measurement !== undefined && g3.measurement !== null) ? ` (${g3.measurement} ${g3.unit || 'mm'})` : ''}` : 'PENDING UPSTREAM'}</div>
-          <div class="popup-note">${isLive ? 'Live Open-Meteo Ingestion Verified' : z.note}</div>
-        </div>
-      `;
-
-      marker.bindPopup(popupContent);
-      leafletMarkers[key] = marker;
-    });
-
-    console.log("[VANA Control Center] Leaflet accurate tile map initialized.");
-  } catch (e) {
-    console.warn("[VANA Control Center] Leaflet init error:", e);
+  if (window.VanaGeoEngine) {
+    window.VanaGeoEngine.init("leafletMap");
+    leafletMap = window.VanaGeoEngine.map;
+    return;
   }
 }
 
 function updateLeafletMap(data) {
+  if (window.VanaGeoEngine) {
+    window.VanaGeoEngine.updateWithRuntimeData(data);
+    leafletMap = window.VanaGeoEngine.map;
+    if (leafletMap) leafletMap.invalidateSize();
+    return;
+  }
   if (!leafletMap) return;
   leafletMap.invalidateSize();
 }
 
 function focusMapLocation(lat, lon, zoom) {
+  if (window.VanaGeoEngine && window.VanaGeoEngine.map) {
+    window.VanaGeoEngine.map.setView([lat, lon], zoom || 11, { animate: true });
+    return;
+  }
   if (!leafletMap) return;
   leafletMap.setView([lat, lon], zoom || 11, { animate: true });
 }
@@ -1381,208 +1380,25 @@ function setMapDisplayMode(mode) {
   const schematicWrapper = document.getElementById("schematicMapWrapper");
   const btnTile = document.getElementById("btnMapTile");
   const btnSchematic = document.getElementById("btnMapSchematic");
-  const accuracyNote = document.getElementById("mapAccuracyNote");
 
   if (mode === "tile") {
     if (tileWrapper) tileWrapper.style.display = "block";
     if (schematicWrapper) schematicWrapper.style.display = "none";
     if (btnTile) btnTile.classList.add("active");
     if (btnSchematic) btnSchematic.classList.remove("active");
-    if (accuracyNote) accuracyNote.innerHTML = '<span class="note-pill">Geographic Tiles Active</span>';
-    if (leafletMap) leafletMap.invalidateSize();
+    if (window.VanaGeoEngine && window.VanaGeoEngine.map) {
+      setTimeout(() => { window.VanaGeoEngine.map.invalidateSize(); }, 150);
+    } else if (leafletMap) {
+      setTimeout(() => { leafletMap.invalidateSize(); }, 150);
+    }
   } else {
     if (tileWrapper) tileWrapper.style.display = "none";
     if (schematicWrapper) schematicWrapper.style.display = "flex";
     if (btnTile) btnTile.classList.remove("active");
     if (btnSchematic) btnSchematic.classList.add("active");
-    if (accuracyNote) accuracyNote.innerHTML = '<span class="note-pill warn">Schematic — Not to scale</span>';
   }
 }
 
-// =============================================================================
-// PRIORITY 2: SCOPED KAVY MASTERDB DATA REGISTRY ENGINE
-// Strict Read-Only Lookup & Honest Error Parsing
-// =============================================================================
-async function lookupKavyData() {
-  const inputEl = document.getElementById("kavyLookupId");
-  const baseUrlEl = document.getElementById("kavyBaseUrl");
-  const resultContainer = document.getElementById("kavyResultContainer");
-  if (!inputEl || !resultContainer) return;
-
-  const id = inputEl.value.trim();
-  if (!id) {
-    resultContainer.innerHTML = `
-      <div class="decision-block ABSTAIN" style="margin-top:10px">
-        <div class="decision-label">Input Required</div>
-        <div class="decision-outcome">ENTER DATASET OR PACKAGE ID</div>
-        <div class="decision-reason">Please specify an identifier to query live KAVY status. Zero defaults are pre-filled.</div>
-      </div>
-    `;
-    return;
-  }
-
-  const isProxied = location.port === "8080" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
-  let baseUrl = baseUrlEl && baseUrlEl.value.trim() ? baseUrlEl.value.trim() : (isProxied ? "/proxy/kavy" : "http://127.0.0.1:8000");
-  if (baseUrl.endsWith("/")) baseUrl = baseUrl.slice(0, -1);
-
-  resultContainer.innerHTML = `
-    <div style="padding:16px;color:var(--text-secondary);font-size:12px;display:flex;align-items:center;gap:8px">
-      <div class="pulse-dot" style="background:var(--brand)"></div>
-      <span>Querying live KAVY MasterDB endpoints (GET /status/${encodeURIComponent(id)} &amp; GET /tantra/packages/${encodeURIComponent(id)}/runtime)...</span>
-    </div>
-  `;
-
-  let datasetStatusRes = null;
-  let datasetStatusData = null;
-  let datasetStatusErr = null;
-
-  let packageRuntimeRes = null;
-  let packageRuntimeData = null;
-  let packageRuntimeErr = null;
-
-  // 1. GET /status/{dataset_id}
-  try {
-    const res = await fetch(`${baseUrl}/status/${encodeURIComponent(id)}`, {
-      headers: { "Accept": "application/json" }
-    });
-    datasetStatusRes = res;
-    const json = await res.json();
-    if (res.ok) {
-      datasetStatusData = json;
-    } else {
-      datasetStatusErr = (json && json.error && json.error.message) ? json.error.message : (json.message || `HTTP ${res.status}`);
-    }
-  } catch (e) {
-    datasetStatusErr = `Network request failed: ${e.message}`;
-  }
-
-  // 2. GET /tantra/packages/{package_id}/runtime
-  try {
-    const res = await fetch(`${baseUrl}/tantra/packages/${encodeURIComponent(id)}/runtime`, {
-      headers: { "Accept": "application/json" }
-    });
-    packageRuntimeRes = res;
-    const json = await res.json();
-    if (res.ok) {
-      packageRuntimeData = json;
-    } else {
-      packageRuntimeErr = (json && json.error && json.error.message) ? json.error.message : (json.message || `HTTP ${res.status}`);
-    }
-  } catch (e) {
-    packageRuntimeErr = `Network request failed: ${e.message}`;
-  }
-
-  // Render Honest Results
-  const statusOk = datasetStatusData && !datasetStatusErr;
-  const runtimeOk = packageRuntimeData && !packageRuntimeErr;
-
-  const pkg = (packageRuntimeData && packageRuntimeData.package) || {};
-  const lineage = (packageRuntimeData && packageRuntimeData.lineage) || {};
-  const retrieval = (packageRuntimeData && packageRuntimeData.retrieval_readiness) || {};
-  const cert = (packageRuntimeData && packageRuntimeData.certification_status) || {};
-
-  let html = `
-    <!-- Top Query Summary Bar -->
-    <div class="stage-card" style="margin-bottom:12px">
-      <div class="stage-card-head">
-        <div>
-          <div class="stage-group-tag">KAVY MasterDB Registry Lookup</div>
-          <div class="stage-title">Query Results for Record: <span class="mono">${id}</span></div>
-          <div class="stage-id-line mono">Base Endpoint: <strong>${baseUrl}</strong></div>
-        </div>
-        <span class="badge ${statusOk || runtimeOk ? 'LIVE' : 'BLOCKED'}">
-          <span class="badge-swatch"></span>${statusOk || runtimeOk ? 'RECORD REACHABLE' : 'UNREACHABLE / NOT FOUND'}
-        </span>
-      </div>
-    </div>
-
-    <div class="field-zones-grid">
-
-      <!-- Sub-section 1: Dataset Status (GET /status/{id}) -->
-      <div class="stage-card">
-        <div class="stage-card-head">
-          <div class="stage-group-tag">Endpoint: GET /status/{dataset_id}</div>
-          <div class="stage-title">Dataset Status &amp; Integrity</div>
-        </div>
-        ${datasetStatusErr ? `
-          <div class="decision-block BLOCK">
-            <div class="decision-label">Status Lookup Failure</div>
-            <div class="decision-outcome">HONEST FAILURE / 404</div>
-            <div class="decision-reason">${datasetStatusErr}</div>
-          </div>
-        ` : `
-          <div class="field-grid">
-            <div class="field-cell"><div class="field-k">State</div><div class="field-v mono" style="color:var(--status-ok)">${datasetStatusData.state !== undefined ? datasetStatusData.state : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Classification</div><div class="field-v mono">${datasetStatusData.classification !== undefined ? datasetStatusData.classification : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Integrity Score</div><div class="field-v mono" style="color:var(--brand);font-weight:700">${datasetStatusData.integrity_score !== undefined ? datasetStatusData.integrity_score : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Eligible for MasterDB</div><div class="field-v mono">${datasetStatusData.eligible_for_masterdb !== undefined ? String(datasetStatusData.eligible_for_masterdb) : 'Not available'}</div></div>
-          </div>
-        `}
-      </div>
-
-      <!-- Sub-section 2: Package Metadata (GET /tantra/packages/{id}/runtime) -->
-      <div class="stage-card">
-        <div class="stage-card-head">
-          <div class="stage-group-tag">Endpoint: GET /tantra/packages/{id}/runtime (Package)</div>
-          <div class="stage-title">Package Lifecycle &amp; State</div>
-        </div>
-        ${packageRuntimeErr ? `
-          <div class="decision-block BLOCK">
-            <div class="decision-label">Runtime Package Lookup Failure</div>
-            <div class="decision-outcome">HONEST FAILURE / 404</div>
-            <div class="decision-reason">${packageRuntimeErr}</div>
-          </div>
-        ` : `
-          <div class="field-grid">
-            <div class="field-cell"><div class="field-k">Package ID</div><div class="field-v mono">${pkg.package_id !== undefined ? pkg.package_id : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Package Name</div><div class="field-v">${pkg.name !== undefined ? pkg.name : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Version</div><div class="field-v mono">${pkg.version !== undefined ? pkg.version : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Package Status</div><div class="field-v mono" style="color:var(--status-ok)">${pkg.status !== undefined ? pkg.status : 'Not available'}</div></div>
-          </div>
-        `}
-      </div>
-
-      <!-- Sub-section 3: Lineage Sub-section -->
-      <div class="stage-card">
-        <div class="stage-card-head">
-          <div class="stage-group-tag">Endpoint: GET /tantra/packages/{id}/runtime (Lineage)</div>
-          <div class="stage-title">Lineage &amp; Provenance</div>
-        </div>
-        ${packageRuntimeErr ? `
-          <div class="field-cell"><div class="field-k">Lineage Information</div><div class="field-v na-field">Not available (Upstream package lookup failed)</div></div>
-        ` : `
-          <div class="field-grid">
-            <div class="field-cell"><div class="field-k">Upstream IDs</div><div class="field-v mono">${lineage.upstream_ids !== undefined ? JSON.stringify(lineage.upstream_ids) : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Checksum / Hash</div><div class="field-v mono" style="font-size:10px">${lineage.hash || lineage.checksum || 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Timestamp</div><div class="field-v mono">${lineage.timestamp !== undefined ? lineage.timestamp : 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Parent Count</div><div class="field-v mono">${Array.isArray(lineage.upstream_ids) ? lineage.upstream_ids.length : 'Not available'}</div></div>
-          </div>
-        `}
-      </div>
-
-      <!-- Sub-section 4: Certification & Readiness Sub-section -->
-      <div class="stage-card">
-        <div class="stage-card-head">
-          <div class="stage-group-tag">Endpoint: GET /tantra/packages/{id}/runtime (Certification &amp; Readiness)</div>
-          <div class="stage-title">Certification Status &amp; Retrieval Readiness</div>
-        </div>
-        ${packageRuntimeErr ? `
-          <div class="field-cell"><div class="field-k">Certification Information</div><div class="field-v na-field">Not available (Upstream package lookup failed)</div></div>
-        ` : `
-          <div class="field-grid">
-            <div class="field-cell"><div class="field-k">Certification Status</div><div class="field-v mono" style="color:var(--brand);font-weight:700">${cert.status || cert.certification_status || 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Certified By</div><div class="field-v">${cert.certified_by || 'Not available'}</div></div>
-            <div class="field-cell"><div class="field-k">Retrieval Readiness</div><div class="field-v mono" style="color:var(--status-ok)">${retrieval.readiness_state || (retrieval.ready !== undefined ? String(retrieval.ready) : 'Not available')}</div></div>
-            <div class="field-cell"><div class="field-k">Retrieval URI</div><div class="field-v mono" style="font-size:10px">${retrieval.uri || 'Not available'}</div></div>
-          </div>
-        `}
-      </div>
-
-    </div>
-  `;
-
-  resultContainer.innerHTML = html;
-}
 
 // =============================================================================
 // UI NAVIGATION & TAB SWITCHING (SYNCHRONIZED DESKTOP & MOBILE)
@@ -1596,7 +1412,6 @@ function switchStageView(viewName) {
     lineage: { el: "viewLineage", tab: "tabBtnLineage", title: "Lineage Rail & Trace Audit (G3 -> G1 -> G2 -> G4)" },
     governance: { el: "viewGovernance", tab: "tabBtnGovernance", title: "Automated Governance Ruling & Execution Gate" },
     scientific: { el: "viewScientific", tab: "tabBtnScientific", title: "Botanical Context & Dynamic Sensor Context Fields" },
-    dataRegistry: { el: "viewDataRegistry", tab: "tabBtnDataRegistry", title: "KAVY MasterDB Data Registry & Certification Surface" },
     replay: { el: "viewReplay", tab: "tabBtnReplay", title: "Deterministic Lineage Replay Engine" },
     evidencePack: { el: "viewEvidencePack", tab: "tabBtnEvidencePack", title: "Group 3 Source Evidence Pack v2.2" }
   };
@@ -1614,7 +1429,7 @@ function switchStageView(viewName) {
   const titleEl = document.getElementById("stageSubtitleText");
 
   if (selEl) {
-    selEl.style.display = viewName === "map" || viewName === "evidencePack" || viewName === "fieldSummary" || viewName === "dataRegistry" ? "flex" : "block";
+    selEl.style.display = viewName === "map" || viewName === "evidencePack" || viewName === "fieldSummary" ? "flex" : "block";
   }
   if (selTab) selTab.classList.add("active");
   if (titleEl) titleEl.textContent = selected.title;
@@ -1642,7 +1457,6 @@ function switchMainTab(viewKey, navItem) {
     regionalView: "bnavOverview",
     lineageView: "bnavLineage",
     governanceView: "bnavGovernance",
-    dataRegistryView: "bnavDataRegistry",
     replayView: "bnavReplay"
   };
   const bnavId = bnavMap[viewKey];
@@ -1656,7 +1470,6 @@ function switchMainTab(viewKey, navItem) {
     mapView: "map",
     lineageView: "lineage",
     governanceView: "governance",
-    dataRegistryView: "dataRegistry",
     regionalView: "map",
     scientificView: "scientific",
     evidencePackView: "evidencePack",

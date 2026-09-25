@@ -1,7 +1,18 @@
 """
-VANA Control Center - Server & CORS Proxy Gateway
-Serves the executive web interface and transparently reverse-proxies
-Group 1, Group 2, and Group 4 backend endpoints to eliminate CORS and mixed-content issues.
+VANA Control Center — Local Development Server & CORS Proxy Gateway
+====================================================================
+Serves the static web interface and transparently reverse-proxies
+Group 1, Group 2, and Group 4 backend endpoints to eliminate CORS
+and mixed-content issues during local development.
+
+FOR LOCAL USE ONLY. In production (Vercel), the same /proxy/* routes
+are handled by Vercel rewrites defined in vercel.json — no Python
+server is required or used in production.
+
+Proxy targets mirror vercel.json rewrites exactly:
+  /proxy/g1  →  http://163.128.209.18:8013
+  /proxy/g2  →  https://niyantran.blackholeinfiverse.com
+  /proxy/g4  →  http://163.128.209.18:8010
 """
 
 import http.server
@@ -20,7 +31,6 @@ TARGETS = {
     "/proxy/g1": "http://163.128.209.18:8013",
     "/proxy/g2": "https://niyantran.blackholeinfiverse.com",
     "/proxy/g4": "http://163.128.209.18:8010",
-    "/proxy/kavy": "http://127.0.0.1:8000",
 }
 
 class VANAHandler(http.server.SimpleHTTPRequestHandler):

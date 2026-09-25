@@ -78,7 +78,7 @@ All endpoints are pre-configured in the dashboard. No additional setup required.
 
 | Group | Purpose | Endpoint | Method | Status |
 |-------|---------|----------|--------|--------|
-| **Group 1** | Canonical MasterDB API | `http://163.128.209.18:8013` | GET `/observations/{observation_id}` | ✅ Healthy |
+| **Group 1** | Observations API | `http://163.128.209.18:8013` | GET `/observations/{observation_id}` | ✅ Healthy |
 | **Group 2** | Context & Decision Brain | `https://niyantran.blackholeinfiverse.com/api/group2/context/resolve` | POST | ✅ Healthy |
 | **Group 4** | Intake Runtime & Governed Outcome | `http://163.128.209.18:8010/vana/execute` | POST | ✅ Healthy |
 
