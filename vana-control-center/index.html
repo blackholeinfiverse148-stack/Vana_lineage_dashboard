@@ -125,6 +125,7 @@
   <main class="main-viewport">
 
     <!-- Top Executive Header -->
+    <!-- Top Executive Header -->
     <header class="top-header">
       <div class="header-left">
         <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Navigation">
@@ -136,12 +137,59 @@
           </svg>
         </div>
         <div class="header-title-group">
-          <h1>VANA — Environmental Governance Monitoring System</h1>
-          <div class="header-subtitle">Government of Maharashtra · Department of Environment &amp; Climate Change · Operational Surveillance Surface</div>
+          <div class="header-supertitle">GOVERNMENT OF MAHARASHTRA · FOREST DEPARTMENT</div>
+          <h1>VANA Control Center</h1>
+          <div class="header-subtitle">Environmental Governance &amp; Institutional Surveillance Surface</div>
+        </div>
+      </div>
+
+      <!-- Institutional Jurisdiction Context & Active Role Indicators -->
+      <div class="header-center hide-on-small">
+        <div class="institutional-context-bar">
+          <!-- Active Jurisdiction Context Pill -->
+          <div class="jurisdiction-context-pill" id="headerJurisdictionPill" title="Active Institutional Jurisdiction Scope">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 21s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 7.2c0 7.3-8 11.8-8 11.8z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span class="jur-label">Jurisdiction:</span>
+            <strong class="jur-val" id="headerJurisdictionVal">Maharashtra (State)</strong>
+          </div>
+
+          <!-- Active Role Badge Pill -->
+          <div class="role-badge-pill" id="headerRoleBadge" title="Active Role Designation">
+            <span class="role-dot"></span>
+            <span id="headerRoleLabel">PCCF &amp; HoFF</span>
+            <span class="template-indicator" id="headerTemplateBadge">ADMIN</span>
+          </div>
         </div>
       </div>
 
       <div class="header-right">
+        <!-- DEV Simulation Persona Switcher -->
+        <div class="dev-persona-switcher hide-on-mobile" id="devPersonaSwitcher" title="DEV ONLY: Switch simulated Forest Department persona">
+          <label for="devRoleSelectHeader" class="dev-switcher-label">Persona:</label>
+          <select class="dev-switcher-select" id="devRoleSelectHeader" onchange="if(window.VANA_AUTH) { window.VANA_AUTH.setDevRole(this.value); }">
+            <optgroup label="Admin Template">
+              <option value="pccf_hoff" selected>PCCF &amp; HoFF (State)</option>
+              <option value="apccf">Addl. PCCF (State)</option>
+              <option value="ccf">CCF (Thane Circle)</option>
+              <option value="administrator">System Administrator</option>
+            </optgroup>
+            <optgroup label="Officer Template">
+              <option value="cf">CF (Circle Conservator)</option>
+              <option value="dcf_dfo">DCF / DFO (Thane Div)</option>
+              <option value="acf">ACF (Sub-Division)</option>
+              <option value="rfo">RFO (Bhiwandi Range)</option>
+              <option value="operator">Operator (Division)</option>
+            </optgroup>
+            <optgroup label="Field Agent Template">
+              <option value="forester">Forester (Diva Section)</option>
+              <option value="forest_guard">Forest Guard (Kopar Beat)</option>
+            </optgroup>
+          </select>
+        </div>
+
         <!-- Live Clock (IST) -->
         <div class="clock-pill mono">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -190,9 +238,14 @@
     <div class="viewport-scroll-container">
 
       <!-- =========================================================================
-           EXECUTIVE TOP KPI STRIP (6 LIVE RUNTIME CARDS)
+           TEMPLATE 1: ADMIN TEMPLATE ROOT (Default Active Viewport)
            ========================================================================= -->
-      <section class="kpi-strip">
+      <div id="adminTemplateRoot" class="vana-template-container template-active" data-template="ADMIN">
+
+        <!-- =========================================================================
+             EXECUTIVE TOP KPI STRIP (6 LIVE RUNTIME CARDS)
+             ========================================================================= -->
+        <section class="kpi-strip">
         <!-- KPI 1: System Health -->
         <div class="kpi-card highlight">
           <div class="kpi-header">
@@ -622,6 +675,394 @@
 
       </div>
 
+      </div> <!-- /#adminTemplateRoot -->
+
+      <!-- =========================================================================
+           TEMPLATE 2: OFFICER TEMPLATE ROOT (Tactical Division/Range Command)
+           ========================================================================= -->
+      <div id="officerTemplateRoot" class="vana-template-container template-hidden" data-template="OFFICER">
+
+        <!-- Officer Template Header Deck -->
+        <section class="template-deck-header">
+          <div class="deck-header-left">
+            <div class="deck-badge officer">OFFICER COMMAND SURFACE</div>
+            <h2 class="deck-title" id="officerRankTitle">Divisional Situation &amp; Tactical Operations Deck</h2>
+            <div class="deck-subtitle">Active Jurisdiction: <span class="mono bold text-emerald" id="officerJurisdictionText">Thane Territorial Division</span> · <span id="officerScopeLevel" class="text-muted">Scope Level: DIVISION · DEV SIMULATION CONTEXT</span></div>
+          </div>
+          <div class="deck-header-right">
+            <span class="status-notice-pill">
+              <span class="pulse-dot warn"></span>
+              <span>DEV Simulation Context Active</span>
+            </span>
+          </div>
+        </section>
+
+        <!-- Officer Structural Grid -->
+        <div class="officer-grid-layout">
+          <!-- Column 1: Tactical Situation & Verified Observations -->
+          <div class="officer-col-main">
+
+            <!-- Key Indicators Strip (Factual & Verified Sources) -->
+            <div class="officer-kpi-grid">
+              <!-- Live Station Telemetry Card -->
+              <div class="officer-kpi-card highlight">
+                <div class="kpi-label">Verified Live Telemetry (Thane Creek)</div>
+                <div class="kpi-metric-val emerald" id="officerLiveObsVal">DATA SOURCE PENDING INGESTION</div>
+                <div class="kpi-meta">
+                  <span class="nav-badge live" id="officerLiveObsBadge">CONFIRMED LIVE</span>
+                  <span class="meta-note mono" id="officerLiveObsId">DATA SOURCE PENDING INGESTION</span>
+                </div>
+              </div>
+
+              <!-- Forest Cover Baseline Card -->
+              <div class="officer-kpi-card">
+                <div class="kpi-label">Forest Cover Assessment Baseline</div>
+                <div class="kpi-metric-val">Pending Feed</div>
+                <div class="kpi-meta">
+                  <span class="badge-unverified">DATA SOURCE PENDING INGESTION</span>
+                  <span class="meta-note">Authoritative FSI State Geo-Portal integration pending</span>
+                </div>
+              </div>
+
+              <!-- Ground Patrol Telemetry Card -->
+              <div class="officer-kpi-card">
+                <div class="kpi-label">Ground Patrol Telemetry</div>
+                <div class="kpi-metric-val">Offline / Standby</div>
+                <div class="kpi-meta">
+                  <span class="badge-unverified">PATROL TELEMETRY PENDING INGESTION</span>
+                  <span class="meta-note">Real-time staff GPS tracking is not deployed</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Approvals & Review Desk Container -->
+            <div class="officer-panel-card">
+              <div class="panel-card-header">
+                <div class="panel-title-group">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  <h3>Canonical Observations &amp; Field Reports Desk</h3>
+                </div>
+                <div class="panel-badge-group">
+                  <span class="badge-dev-sim">DEV SIMULATION</span>
+                </div>
+              </div>
+
+              <!-- Authoritative Observations Table -->
+              <div class="officer-table-wrapper">
+                <table class="officer-table">
+                  <thead>
+                    <tr>
+                      <th>Observation ID</th>
+                      <th>Canonical Record ID</th>
+                      <th>Zone / Station</th>
+                      <th>Observed Value</th>
+                      <th>Governance Ruling</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="mono bold text-emerald" id="officerTableLiveObsId">DATA SOURCE PENDING INGESTION</td>
+                      <td class="mono text-muted" id="officerLiveCanonicalId">DATA SOURCE PENDING INGESTION</td>
+                      <td>Thane Creek (TC-Z03)</td>
+                      <td id="officerLiveTableRowVal">DATA SOURCE PENDING INGESTION</td>
+                      <td><span class="nav-badge live">CONFIRMED LIVE</span></td>
+                      <td>
+                        <span class="btn-action-disabled" title="No backend review/approval mutation endpoint connected">Review</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono">
+                        <div>SMR-Z01-EXT-SAMACHAR-OBS001</div>
+                        <div style="margin-top:2px;"><span class="badge-dev-sim" style="font-size:9px;padding:1px 5px;">DEV/TEST REFERENCE</span></div>
+                      </td>
+                      <td class="mono text-muted">CR-c3d2e7cc-3ddc-41d6-a85c-b782cf43801d</td>
+                      <td>Samachar News (SMR-Z01) <em style="font-size:10px;color:var(--text-muted);display:block;">(Historical Audit Fixture)</em></td>
+                      <td>News Report (Context Unverified)</td>
+                      <td><span class="nav-badge" style="background:var(--status-warn-bg);color:var(--status-warn)">GOVERNED ABSTENTION</span></td>
+                      <td>
+                        <span class="btn-action-disabled" title="No backend review/approval mutation endpoint connected">Inspect</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="panel-footer-notice">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>DEV SIMULATION ONLY — Officer review &amp; approval mutations require an authoritative backend ingest endpoint. No server mutations are executed.</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Column 2: Tactical Divisional Exceptions & Diagnostics -->
+          <div class="officer-col-side">
+            <div class="officer-panel-card">
+              <div class="panel-card-header">
+                <div class="panel-title-group">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                  <h3>Divisional Exceptions &amp; Diagnostics</h3>
+                </div>
+                <span class="nav-badge alert-badge">2 Verified Gaps</span>
+              </div>
+
+              <div class="officer-alerts-stream">
+                <div class="officer-alert-card warn">
+                  <div class="alert-top">
+                    <span class="alert-cat">UNPERSISTED UPSTREAM REGION</span>
+                    <span class="alert-time">Group 1 Gap</span>
+                  </div>
+                  <div class="alert-desc">Vasai monitoring zone (VS-Z01) unpersisted in Group 1 runtime (HTTP 500 / 404). Fail-closed status active.</div>
+                  <div class="alert-foot">
+                    <span class="mono">Zone: VS-Z01</span>
+                    <span class="btn-action-disabled" title="No backend mutation endpoint connected">Acknowledge</span>
+                  </div>
+                </div>
+
+                <div class="officer-alert-card warn">
+                  <div class="alert-top">
+                    <span class="alert-cat">GOVERNED ABSTENTION (DEV/TEST REFERENCE)</span>
+                    <span class="alert-time">Group 4 Gate</span>
+                  </div>
+                  <div class="alert-desc">Historical test fixture: Context unverified for SAMACHAR observation SMR-Z01 (CONTEXT_NOT_VERIFIED). Decision action: noop.</div>
+                  <div class="alert-foot">
+                    <span class="mono">Zone: SMR-Z01 (DEV/TEST)</span>
+                    <span class="btn-action-disabled" title="No backend mutation endpoint connected">Inspect</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Factual Operational Diagnostics Panel (Zero Invented SOPs) -->
+              <div class="panel-footer-notice" style="border-top:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+                <div class="mono bold text-emerald" style="font-size:10px;">OPERATIONAL RUNTIME DIAGNOSTIC</div>
+                <div style="font-size:11px;color:var(--text-secondary);line-height:1.35;">
+                  All operational decisions remain governed under fail-closed doctrine. Unverified data streams do not trigger downstream autonomous execution.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /#officerTemplateRoot -->
+
+      <!-- =========================================================================
+           TEMPLATE 3: FIELD AGENT TEMPLATE ROOT (Mobile-First Tactical Capture)
+           ========================================================================= -->
+      <div id="fieldTemplateRoot" class="vana-template-container template-hidden" data-template="FIELD">
+
+        <!-- Field Agent Header & Beat Status -->
+        <section class="field-header-card">
+          <div class="field-beat-banner">
+            <div class="field-beat-info">
+              <span class="field-role-tag" id="fieldRoleTag">BEAT SURVEILLANCE DESK</span>
+              <h2 class="field-beat-title" id="fieldBeatTitle">DATA SOURCE PENDING INGESTION</h2>
+              <div class="field-beat-sub" id="fieldBeatSub">DEV SIMULATION CONTEXT · NON-AUTHORITATIVE</div>
+            </div>
+            <div class="field-gps-chip" id="fieldGpsChip">
+              <div class="gps-beacon-dot warn"></div>
+              <span class="mono" id="fieldGpsCoords">PATROL TELEMETRY PENDING INGESTION</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Field Agent Sub-Views Container -->
+        <div class="field-modules-container">
+
+          <!-- ── SUB-VIEW 1: TODAY'S WORK SURFACE ────────────────────────────── -->
+          <div id="fieldViewToday" class="field-subview active">
+            <!-- Active Assignment Feed -->
+            <div class="field-card">
+              <div class="field-card-header">
+                <div class="field-card-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                  <h3>Assigned Patrol Tasks &amp; Schedule</h3>
+                </div>
+                <span class="badge-unverified">DATA SOURCE PENDING INGESTION</span>
+              </div>
+              <div class="field-empty-state">
+                <div class="empty-icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+                <div class="empty-title">NO AUTHORITATIVE ASSIGNMENTS AVAILABLE</div>
+                <div class="empty-desc">Authoritative task dispatching and beat assignment integration is currently pending ingestion. Per constitutional fail-closed doctrine, unpersisted tasks are never fabricated.</div>
+              </div>
+            </div>
+
+            <!-- Field Telemetry & Sensor Connectivity Card -->
+            <div class="field-card">
+              <div class="field-card-header">
+                <div class="field-card-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  <h3>Field Telemetry &amp; Location Stream</h3>
+                </div>
+                <span class="nav-badge alert-badge">Standby</span>
+              </div>
+              <div class="field-telemetry-body">
+                <div class="field-telemetry-row">
+                  <span class="field-tel-k">Personnel GPS Telemetry:</span>
+                  <span class="field-tel-v text-muted mono">PATROL TELEMETRY PENDING INGESTION</span>
+                </div>
+                <div class="field-telemetry-row">
+                  <span class="field-tel-k">Hardware Tracking Status:</span>
+                  <span class="field-tel-v text-muted">REAL-TIME STAFF GPS TRACKING NOT DEPLOYED</span>
+                </div>
+                <div class="field-telemetry-note">
+                  No GPS coordinates or movement breadcrumbs are simulated. Tactical positioning relies on authorized institutional gateways.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── SUB-VIEW 2: OBSERVATION CAPTURE ──────────────────────────────── -->
+          <div id="fieldViewObserve" class="field-subview hidden">
+            <div class="field-card highlight-field">
+              <div class="field-card-header">
+                <div class="field-card-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <h3>Field Ground Observation Capture</h3>
+                </div>
+                <span class="badge-dev-sim">DEV SIMULATION ONLY</span>
+              </div>
+
+              <div class="field-capture-body">
+                <div class="field-form-notice">
+                  <strong>Notice:</strong> Submission endpoint pending backend connection. This is a structural capture interface; no observations are dispatched to live servers.
+                </div>
+
+                <div class="field-form-row">
+                  <label class="field-label" for="fieldObsCategory">Observation Category</label>
+                  <select class="field-select" id="fieldObsCategory" disabled>
+                    <option>Precipitation / Weather Gauge Check</option>
+                    <option>Mangrove Health / Canopy Assessment</option>
+                    <option>Ecosystem Anomaly / Disturbance</option>
+                    <option>Boundary Pillar Inspection</option>
+                  </select>
+                </div>
+
+                <div class="field-form-row">
+                  <label class="field-label" for="fieldObsLocation">Target Location / Beat Scope</label>
+                  <input type="text" class="field-input mono" id="fieldObsLocation" value="DATA SOURCE PENDING INGESTION" disabled>
+                </div>
+
+                <div class="field-form-row">
+                  <label class="field-label" for="fieldObsNotes">Field Remarks / Observation Notes</label>
+                  <input type="text" class="field-input" id="fieldObsNotes" placeholder="Enter physical observation remarks / ground context" disabled>
+                </div>
+
+                <div class="field-form-row">
+                  <label class="field-label" for="fieldObsTimestamp">Capture Timestamp</label>
+                  <input type="text" class="field-input mono" id="fieldObsTimestamp" value="DATA SOURCE PENDING INGESTION" disabled>
+                </div>
+
+                <button class="field-submit-btn-disabled" disabled title="No backend observation submission endpoint connected">
+                  SUBMISSION ENDPOINT PENDING INGESTION
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── SUB-VIEW 3: EVIDENCE ATTACHMENT ──────────────────────────────── -->
+          <div id="fieldViewEvidence" class="field-subview hidden">
+            <div class="field-card">
+              <div class="field-card-header">
+                <div class="field-card-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                  <h3>Evidence Attachment &amp; Media Ingestion</h3>
+                </div>
+                <span class="badge-unverified">EVIDENCE INGESTION PENDING</span>
+              </div>
+
+              <div class="field-capture-body">
+                <div class="field-camera-trigger-box disabled">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <span class="bold">CAMERA / FILE INGESTION NOT CONNECTED</span>
+                  <span class="text-muted" style="font-size:10.5px;text-align:center;">Direct camera access and binary media uploads require upstream authenticated storage ingestion.</span>
+                </div>
+
+                <div class="field-telemetry-note">
+                  Role capability <code class="mono">SUBMIT_EVIDENCE_ATTACHMENT</code> is defined in the role model, but upstream ingestion endpoints remain unconnected.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── SUB-VIEW 4: OFFLINE QUEUE ────────────────────────────────────── -->
+          <div id="fieldViewQueue" class="field-subview hidden">
+            <div class="field-card">
+              <div class="field-card-header">
+                <div class="field-card-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  <h3>Offline Queue &amp; Sync Engine</h3>
+                </div>
+                <span class="badge-offline-queue">PERSISTENCE ENGINE PENDING</span>
+              </div>
+
+              <div class="field-empty-state">
+                <div class="empty-icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+                <div class="empty-title">NO LOCAL RECORDS AVAILABLE</div>
+                <div class="empty-desc">Client-side offline IndexedDB / local persistence synchronization engine is not connected. No offline records are queued.</div>
+                <div class="mono" style="font-size:10px;color:var(--text-muted);margin-top:4px;">OFFLINE QUEUE · PERSISTENCE ENGINE PENDING</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── SUB-VIEW 5: PROFILE & JURISDICTION AUTHORITY ─────────────────── -->
+          <div id="fieldViewProfile" class="field-subview hidden">
+            <div class="field-card">
+              <div class="field-card-header">
+                <div class="field-card-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <h3>Field Official Identity &amp; Authority</h3>
+                </div>
+                <span class="badge-dev-sim">DEV SIMULATION CONTEXT</span>
+              </div>
+
+              <div class="field-profile-body">
+                <div class="field-profile-grid">
+                  <div class="prof-item">
+                    <span class="prof-k">Role Code:</span>
+                    <span class="prof-v mono bold text-emerald" id="fieldProfileRole">forester</span>
+                  </div>
+                  <div class="prof-item">
+                    <span class="prof-k">Rank Title:</span>
+                    <span class="prof-v bold" id="fieldProfileRankTitle">Round Officer / Forester</span>
+                  </div>
+                  <div class="prof-item">
+                    <span class="prof-k">Assigned Jurisdiction:</span>
+                    <span class="prof-v" id="fieldProfileJurisdiction">Diva Section</span>
+                  </div>
+                  <div class="prof-item">
+                    <span class="prof-k">Hierarchy Scope:</span>
+                    <span class="prof-v mono" id="fieldProfileLevel">SECTION</span>
+                  </div>
+                  <div class="prof-item">
+                    <span class="prof-k">Template Class:</span>
+                    <span class="prof-v"><span class="nav-badge" style="background:rgba(16,185,129,0.15);color:#10B981;">FIELD</span></span>
+                  </div>
+                </div>
+
+                <div class="field-caps-section">
+                  <div class="field-caps-header">Granted Operational Capabilities</div>
+                  <div class="field-caps-list" id="fieldProfileCapabilitiesList">
+                    <!-- Populated dynamically by field-agent.js -->
+                  </div>
+                </div>
+
+                <div class="panel-footer-notice" style="margin-top:10px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span>NON-AUTHORITATIVE TEST CONTEXT — Role simulation is for interface validation only and does not confer legal or administrative forest authority.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div> <!-- /#fieldTemplateRoot -->
+
       <!-- Bottom Telemetry Status Footer -->
       <footer class="bottom-telemetry-footer">
         <div class="footer-chips-group">
@@ -651,9 +1092,10 @@
     </div>
 
     <!-- =========================================================================
-         MOBILE BOTTOM NAVIGATION BAR (Visible on screens <= 768px)
+         MOBILE BOTTOM NAVIGATION BARS (Visible on screens <= 768px)
          ========================================================================= -->
-    <nav class="mobile-bottom-nav">
+    <!-- 1. Admin & Officer Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="adminBottomNav">
       <button class="bottom-nav-item active" id="bnavField" onclick="switchMainTab('fieldSummaryView', this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
         <span>Field</span>
@@ -688,13 +1130,47 @@
       </button>
     </nav>
 
+    <!-- 2. Field Agent Dedicated Mobile Bottom Navigation (Visible when in Field template) -->
+    <nav class="mobile-bottom-nav field-bottom-nav" id="fieldBottomNav" style="display:none">
+      <button class="bottom-nav-item active" id="fbnavToday" onclick="VANA_FIELD.switchSubView('today', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>Today</span>
+      </button>
+
+      <button class="bottom-nav-item" id="fbnavObserve" onclick="VANA_FIELD.switchSubView('observe', this)">
+        <div class="nav-icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        </div>
+        <span>Observe</span>
+      </button>
+
+      <button class="bottom-nav-item" id="fbnavEvidence" onclick="VANA_FIELD.switchSubView('evidence', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+        <span>Evidence</span>
+      </button>
+
+      <button class="bottom-nav-item" id="fbnavQueue" onclick="VANA_FIELD.switchSubView('queue', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Queue</span>
+      </button>
+
+      <button class="bottom-nav-item" id="fbnavProfile" onclick="VANA_FIELD.switchSubView('profile', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
   </main>
 </div>
 
-<!-- Leaflet JS for geographic mapping -->
+<!-- Scripts Architecture -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="config.js"></script>
+<script src="forest-hierarchy.js"></script>
+<script src="admin-auth.js"></script>
 <script src="geospatial.js"></script>
 <script src="app.js"></script>
+<script src="officer-desk.js"></script>
+<script src="field-agent.js"></script>
 </body>
 </html>
