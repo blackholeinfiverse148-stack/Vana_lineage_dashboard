@@ -125,6 +125,7 @@
   <main class="main-viewport">
 
     <!-- Top Executive Header -->
+    <!-- Top Executive Header -->
     <header class="top-header">
       <div class="header-left">
         <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Navigation">
@@ -136,12 +137,59 @@
           </svg>
         </div>
         <div class="header-title-group">
-          <h1>VANA — Environmental Governance Monitoring System</h1>
-          <div class="header-subtitle">Government of Maharashtra · Department of Environment &amp; Climate Change · Operational Surveillance Surface</div>
+          <div class="header-supertitle">GOVERNMENT OF MAHARASHTRA · FOREST DEPARTMENT</div>
+          <h1>VANA Control Center</h1>
+          <div class="header-subtitle">Environmental Governance &amp; Institutional Surveillance Surface</div>
+        </div>
+      </div>
+
+      <!-- Institutional Jurisdiction Context & Active Role Indicators -->
+      <div class="header-center hide-on-small">
+        <div class="institutional-context-bar">
+          <!-- Active Jurisdiction Context Pill -->
+          <div class="jurisdiction-context-pill" id="headerJurisdictionPill" title="Active Institutional Jurisdiction Scope">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 21s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 7.2c0 7.3-8 11.8-8 11.8z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span class="jur-label">Jurisdiction:</span>
+            <strong class="jur-val" id="headerJurisdictionVal">Maharashtra (State)</strong>
+          </div>
+
+          <!-- Active Role Badge Pill -->
+          <div class="role-badge-pill" id="headerRoleBadge" title="Active Role Designation">
+            <span class="role-dot"></span>
+            <span id="headerRoleLabel">PCCF &amp; HoFF</span>
+            <span class="template-indicator" id="headerTemplateBadge">ADMIN</span>
+          </div>
         </div>
       </div>
 
       <div class="header-right">
+        <!-- DEV Simulation Persona Switcher -->
+        <div class="dev-persona-switcher hide-on-mobile" id="devPersonaSwitcher" title="DEV ONLY: Switch simulated Forest Department persona">
+          <label for="devRoleSelectHeader" class="dev-switcher-label">Persona:</label>
+          <select class="dev-switcher-select" id="devRoleSelectHeader" onchange="if(window.VANA_AUTH) { window.VANA_AUTH.setDevRole(this.value); }">
+            <optgroup label="Admin Template">
+              <option value="pccf_hoff" selected>PCCF &amp; HoFF (State)</option>
+              <option value="apccf">Addl. PCCF (State)</option>
+              <option value="ccf">CCF (Thane Circle)</option>
+              <option value="administrator">System Administrator</option>
+            </optgroup>
+            <optgroup label="Officer Template">
+              <option value="cf">CF (Circle Conservator)</option>
+              <option value="dcf_dfo">DCF / DFO (Thane Div)</option>
+              <option value="acf">ACF (Sub-Division)</option>
+              <option value="rfo">RFO (Bhiwandi Range)</option>
+              <option value="operator">Operator (Division)</option>
+            </optgroup>
+            <optgroup label="Field Agent Template">
+              <option value="forester">Forester (Diva Section)</option>
+              <option value="forest_guard">Forest Guard (Kopar Beat)</option>
+            </optgroup>
+          </select>
+        </div>
+
         <!-- Live Clock (IST) -->
         <div class="clock-pill mono">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -190,9 +238,14 @@
     <div class="viewport-scroll-container">
 
       <!-- =========================================================================
-           EXECUTIVE TOP KPI STRIP (6 LIVE RUNTIME CARDS)
+           TEMPLATE 1: ADMIN TEMPLATE ROOT (Default Active Viewport)
            ========================================================================= -->
-      <section class="kpi-strip">
+      <div id="adminTemplateRoot" class="vana-template-container template-active" data-template="ADMIN">
+
+        <!-- =========================================================================
+             EXECUTIVE TOP KPI STRIP (6 LIVE RUNTIME CARDS)
+             ========================================================================= -->
+        <section class="kpi-strip">
         <!-- KPI 1: System Health -->
         <div class="kpi-card highlight">
           <div class="kpi-header">
@@ -622,6 +675,287 @@
 
       </div>
 
+      </div> <!-- /#adminTemplateRoot -->
+
+      <!-- =========================================================================
+           TEMPLATE 2: OFFICER TEMPLATE ROOT (Tactical Division/Range Command)
+           ========================================================================= -->
+      <div id="officerTemplateRoot" class="vana-template-container template-hidden" data-template="OFFICER">
+
+        <!-- Officer Template Header Deck -->
+        <section class="template-deck-header">
+          <div class="deck-header-left">
+            <div class="deck-badge officer">OFFICER COMMAND SURFACE</div>
+            <h2 class="deck-title">Divisional Situation &amp; Tactical Operations Deck</h2>
+            <div class="deck-subtitle">Active Jurisdiction: <span class="mono bold text-emerald" id="officerJurisdictionText">Thane Territorial Division</span></div>
+          </div>
+          <div class="deck-header-right">
+            <span class="status-notice-pill">
+              <span class="pulse-dot warn"></span>
+              <span>Template Foundation Active</span>
+            </span>
+          </div>
+        </section>
+
+        <!-- Officer Structural Grid -->
+        <div class="officer-grid-layout">
+          <!-- Column 1: Tactical Situation & Forest Cover Summary -->
+          <div class="officer-col-main">
+
+            <!-- Divisional Key Metrics Strip (Structural Cards) -->
+            <div class="officer-kpi-grid">
+              <div class="officer-kpi-card">
+                <div class="kpi-label">Divisional Forest Cover</div>
+                <div class="kpi-metric-val">1,245.8 <span class="unit">sq km</span></div>
+                <div class="kpi-meta">
+                  <span class="badge-static-ref">FSI 2021 Reference</span>
+                  <span class="meta-note">VDF: 18% · MDF: 42% · OF: 40%</span>
+                </div>
+              </div>
+
+              <div class="officer-kpi-card">
+                <div class="kpi-label">Active Beat Coverage</div>
+                <div class="kpi-metric-val">14 / 16 <span class="unit">Beats Active</span></div>
+                <div class="kpi-meta">
+                  <span class="badge-unverified">PATROL FEED PENDING INGESTION</span>
+                </div>
+              </div>
+
+              <div class="officer-kpi-card highlight">
+                <div class="kpi-label">Pending Report Queue</div>
+                <div class="kpi-metric-val emerald">3 <span class="unit">Submissions</span></div>
+                <div class="kpi-meta">
+                  <span class="meta-note">Awaiting Divisional Review</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Approvals Desk Structural Container -->
+            <div class="officer-panel-card">
+              <div class="panel-card-header">
+                <div class="panel-title-group">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  <h3>Field Reports Approvals Desk</h3>
+                </div>
+                <div class="panel-badge-group">
+                  <span class="badge-dev-sim">DEV SIMULATION</span>
+                </div>
+              </div>
+
+              <!-- Structural Placeholder Table -->
+              <div class="officer-table-wrapper">
+                <table class="officer-table">
+                  <thead>
+                    <tr>
+                      <th>Report ID</th>
+                      <th>Beat / Section</th>
+                      <th>Category</th>
+                      <th>Observed Value</th>
+                      <th>Timestamp</th>
+                      <th>Quality</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="mono bold text-emerald">REP-2026-BHW-001</td>
+                      <td>Kopar Beat (Diva Sec)</td>
+                      <td>Precipitation / Gauge</td>
+                      <td>0.1 mm (Controlled)</td>
+                      <td class="mono">2026-08-25 11:00</td>
+                      <td><span class="nav-badge live">Verified</span></td>
+                      <td>
+                        <span class="btn-action-disabled" title="No backend mutation endpoint connected">Review</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mono">REP-2026-BHW-002</td>
+                      <td>Mandal Beat (Diva Sec)</td>
+                      <td>Mangrove Health Check</td>
+                      <td>Canopy intact</td>
+                      <td class="mono">2026-08-24 16:30</td>
+                      <td><span class="nav-badge" style="background:var(--status-warn-bg);color:var(--status-warn)">Pending Upstream</span></td>
+                      <td>
+                        <span class="btn-action-disabled" title="No backend mutation endpoint connected">Review</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="panel-footer-notice">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Officer review mutations require connected backend ingest runtime. Action buttons in Step 2 represent structural layout only.</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Column 2: Tactical Divisional Alerts Stream -->
+          <div class="officer-col-side">
+            <div class="officer-panel-card">
+              <div class="panel-card-header">
+                <div class="panel-title-group">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                  <h3>Divisional Alert Command</h3>
+                </div>
+                <span class="nav-badge alert-badge">2 Active</span>
+              </div>
+
+              <div class="officer-alerts-stream">
+                <div class="officer-alert-card warn">
+                  <div class="alert-top">
+                    <span class="alert-cat">UNPERSISTED UPSTREAM REGION</span>
+                    <span class="alert-time">Active</span>
+                  </div>
+                  <div class="alert-desc">Vasai monitoring zone unpersisted in Group 1 runtime (HTTP 500).</div>
+                  <div class="alert-foot">
+                    <span class="mono">Zone: VS-Z01</span>
+                    <span class="btn-action-disabled">Acknowledge</span>
+                  </div>
+                </div>
+
+                <div class="officer-alert-card warn">
+                  <div class="alert-top">
+                    <span class="alert-cat">GOVERNED ABSTENTION</span>
+                    <span class="alert-time">Enforced</span>
+                  </div>
+                  <div class="alert-desc">Context unverified for SAMACHAR observation SMR-Z01. Governed abstention active.</div>
+                  <div class="alert-foot">
+                    <span class="mono">Zone: SMR-Z01</span>
+                    <span class="btn-action-disabled">Inspect</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /#officerTemplateRoot -->
+
+      <!-- =========================================================================
+           TEMPLATE 3: FIELD AGENT TEMPLATE ROOT (Mobile-First Tactical Capture)
+           ========================================================================= -->
+      <div id="fieldTemplateRoot" class="vana-template-container template-hidden" data-template="FIELD">
+
+        <!-- Field Agent Header & Beat Status -->
+        <section class="field-header-card">
+          <div class="field-beat-banner">
+            <div class="field-beat-info">
+              <span class="field-role-tag">BEAT SURVEILLANCE DESK</span>
+              <h2 class="field-beat-title" id="fieldBeatTitle">Kopar Mangrove Beat</h2>
+              <div class="field-beat-sub">Section: Diva · Range: Bhiwandi · Div: Thane Territorial</div>
+            </div>
+            <div class="field-gps-chip" id="fieldGpsChip">
+              <div class="gps-beacon-dot"></div>
+              <span class="mono" id="fieldGpsCoords">GPS: 19.222° N, 72.956° E (±5m)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Field Agent Work Modules Grid -->
+        <div class="field-modules-container">
+
+          <!-- Module 1: Today's Assigned Tasks -->
+          <div class="field-card">
+            <div class="field-card-header">
+              <div class="field-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                <h3>Today's Beat Patrol Tasks</h3>
+              </div>
+              <span class="field-task-count">2 Pending</span>
+            </div>
+
+            <div class="field-tasks-list">
+              <div class="field-task-item active">
+                <div class="task-checkbox checked">✓</div>
+                <div class="task-details">
+                  <div class="task-title">Thane Creek Gauge Verification</div>
+                  <div class="task-meta">Station: TC-Z03 · Assigned: 08:00 IST</div>
+                </div>
+                <span class="task-status-pill done">Done</span>
+              </div>
+
+              <div class="field-task-item">
+                <div class="task-checkbox"></div>
+                <div class="task-details">
+                  <div class="task-title">Mangrove Inundation Boundary Check</div>
+                  <div class="task-meta">Pillar #14 to #18 · Priority: Routine</div>
+                </div>
+                <span class="task-status-pill pending">Pending</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 2: Capture Observation Form Skeleton -->
+          <div class="field-card highlight-field">
+            <div class="field-card-header">
+              <div class="field-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <h3>Capture Ground Observation</h3>
+              </div>
+              <span class="badge-offline-queue">CLIENT-SIDE OFFLINE QUEUE</span>
+            </div>
+
+            <div class="field-capture-body">
+              <div class="field-form-row">
+                <label class="field-label">Observation Category</label>
+                <select class="field-select" id="fieldObsCategory" disabled>
+                  <option>Precipitation / Gauge Inspection</option>
+                  <option>Mangrove Health / Canopy Assessment</option>
+                  <option>Ecosystem Anomaly / Disturbance</option>
+                  <option>Wildlife Sighting / Footprint</option>
+                </select>
+              </div>
+
+              <div class="field-form-row">
+                <label class="field-label">Evidence Photo Capture</label>
+                <div class="field-camera-trigger-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <span>Attach Field Photograph</span>
+                  <input type="file" accept="image/*" capture="environment" class="field-hidden-input" id="fieldCameraInput" disabled>
+                </div>
+              </div>
+
+              <div class="field-form-row">
+                <label class="field-label">Field Notes &amp; Value</label>
+                <input type="text" class="field-input" placeholder="Enter observation measurement / field remarks" disabled>
+              </div>
+
+              <button class="field-submit-btn-disabled" disabled title="Field Capture Engine will be activated in Step 4">
+                Queue Observation (Step 4 Preview)
+              </button>
+            </div>
+          </div>
+
+          <!-- Module 3: Local Submission Queue Status -->
+          <div class="field-card">
+            <div class="field-card-header">
+              <div class="field-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <h3>Offline Queue &amp; Sync Status</h3>
+              </div>
+              <span class="queue-status-pill">1 Queued Locally</span>
+            </div>
+
+            <div class="field-queue-list">
+              <div class="queue-item">
+                <div class="queue-icon-box">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="queue-details">
+                  <div class="queue-name mono">LOC-QUEUED-TC001</div>
+                  <div class="queue-time">Stored in browser localStorage · Ready for sync</div>
+                </div>
+                <span class="badge-offline-queue">QUEUED</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div> <!-- /#fieldTemplateRoot -->
+
       <!-- Bottom Telemetry Status Footer -->
       <footer class="bottom-telemetry-footer">
         <div class="footer-chips-group">
@@ -651,9 +985,10 @@
     </div>
 
     <!-- =========================================================================
-         MOBILE BOTTOM NAVIGATION BAR (Visible on screens <= 768px)
+         MOBILE BOTTOM NAVIGATION BARS (Visible on screens <= 768px)
          ========================================================================= -->
-    <nav class="mobile-bottom-nav">
+    <!-- 1. Admin & Officer Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="adminBottomNav">
       <button class="bottom-nav-item active" id="bnavField" onclick="switchMainTab('fieldSummaryView', this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
         <span>Field</span>
@@ -688,12 +1023,47 @@
       </button>
     </nav>
 
+    <!-- 2. Field Agent Dedicated Mobile Bottom Navigation (Visible when in Field template) -->
+    <nav class="mobile-bottom-nav field-bottom-nav" id="fieldBottomNav" style="display:none">
+      <button class="bottom-nav-item active" id="fbnavTasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>Tasks</span>
+      </button>
+
+      <button class="bottom-nav-item" id="fbnavMap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon></svg>
+        <span>Beat Map</span>
+      </button>
+
+      <button class="bottom-nav-item field-fab-item" id="fbnavCapture" title="Capture Ground Observation">
+        <div class="fab-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </div>
+        <span>Capture</span>
+      </button>
+
+      <button class="bottom-nav-item" id="fbnavQueue">
+        <div class="nav-icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <span class="mobile-badge" style="background:#06B6D4">1</span>
+        </div>
+        <span>Queue</span>
+      </button>
+
+      <button class="bottom-nav-item" id="fbnavSop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>SOP</span>
+      </button>
+    </nav>
+
   </main>
 </div>
 
-<!-- Leaflet JS for geographic mapping -->
+<!-- Scripts Architecture -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="config.js"></script>
+<script src="forest-hierarchy.js"></script>
+<script src="admin-auth.js"></script>
 <script src="geospatial.js"></script>
 <script src="app.js"></script>
 </body>
