@@ -686,97 +686,102 @@
         <section class="template-deck-header">
           <div class="deck-header-left">
             <div class="deck-badge officer">OFFICER COMMAND SURFACE</div>
-            <h2 class="deck-title">Divisional Situation &amp; Tactical Operations Deck</h2>
-            <div class="deck-subtitle">Active Jurisdiction: <span class="mono bold text-emerald" id="officerJurisdictionText">Thane Territorial Division</span></div>
+            <h2 class="deck-title" id="officerRankTitle">Divisional Situation &amp; Tactical Operations Deck</h2>
+            <div class="deck-subtitle">Active Jurisdiction: <span class="mono bold text-emerald" id="officerJurisdictionText">Thane Territorial Division</span> · <span id="officerScopeLevel" class="text-muted">Scope Level: DIVISION · DEV SIMULATION CONTEXT</span></div>
           </div>
           <div class="deck-header-right">
             <span class="status-notice-pill">
               <span class="pulse-dot warn"></span>
-              <span>Template Foundation Active</span>
+              <span>DEV Simulation Context Active</span>
             </span>
           </div>
         </section>
 
         <!-- Officer Structural Grid -->
         <div class="officer-grid-layout">
-          <!-- Column 1: Tactical Situation & Forest Cover Summary -->
+          <!-- Column 1: Tactical Situation & Verified Observations -->
           <div class="officer-col-main">
 
-            <!-- Divisional Key Metrics Strip (Structural Cards) -->
+            <!-- Key Indicators Strip (Factual & Verified Sources) -->
             <div class="officer-kpi-grid">
-              <div class="officer-kpi-card">
-                <div class="kpi-label">Divisional Forest Cover</div>
-                <div class="kpi-metric-val">1,245.8 <span class="unit">sq km</span></div>
-                <div class="kpi-meta">
-                  <span class="badge-static-ref">FSI 2021 Reference</span>
-                  <span class="meta-note">VDF: 18% · MDF: 42% · OF: 40%</span>
-                </div>
-              </div>
-
-              <div class="officer-kpi-card">
-                <div class="kpi-label">Active Beat Coverage</div>
-                <div class="kpi-metric-val">14 / 16 <span class="unit">Beats Active</span></div>
-                <div class="kpi-meta">
-                  <span class="badge-unverified">PATROL FEED PENDING INGESTION</span>
-                </div>
-              </div>
-
+              <!-- Live Station Telemetry Card -->
               <div class="officer-kpi-card highlight">
-                <div class="kpi-label">Pending Report Queue</div>
-                <div class="kpi-metric-val emerald">3 <span class="unit">Submissions</span></div>
+                <div class="kpi-label">Verified Live Telemetry (Thane Creek)</div>
+                <div class="kpi-metric-val emerald" id="officerLiveObsVal">DATA SOURCE PENDING INGESTION</div>
                 <div class="kpi-meta">
-                  <span class="meta-note">Awaiting Divisional Review</span>
+                  <span class="nav-badge live" id="officerLiveObsBadge">CONFIRMED LIVE</span>
+                  <span class="meta-note mono" id="officerLiveObsId">DATA SOURCE PENDING INGESTION</span>
+                </div>
+              </div>
+
+              <!-- Forest Cover Baseline Card -->
+              <div class="officer-kpi-card">
+                <div class="kpi-label">Forest Cover Assessment Baseline</div>
+                <div class="kpi-metric-val">Pending Feed</div>
+                <div class="kpi-meta">
+                  <span class="badge-unverified">DATA SOURCE PENDING INGESTION</span>
+                  <span class="meta-note">Authoritative FSI State Geo-Portal integration pending</span>
+                </div>
+              </div>
+
+              <!-- Ground Patrol Telemetry Card -->
+              <div class="officer-kpi-card">
+                <div class="kpi-label">Ground Patrol Telemetry</div>
+                <div class="kpi-metric-val">Offline / Standby</div>
+                <div class="kpi-meta">
+                  <span class="badge-unverified">PATROL TELEMETRY PENDING INGESTION</span>
+                  <span class="meta-note">Real-time staff GPS tracking is not deployed</span>
                 </div>
               </div>
             </div>
 
-            <!-- Approvals Desk Structural Container -->
+            <!-- Approvals & Review Desk Container -->
             <div class="officer-panel-card">
               <div class="panel-card-header">
                 <div class="panel-title-group">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                  <h3>Field Reports Approvals Desk</h3>
+                  <h3>Canonical Observations &amp; Field Reports Desk</h3>
                 </div>
                 <div class="panel-badge-group">
                   <span class="badge-dev-sim">DEV SIMULATION</span>
                 </div>
               </div>
 
-              <!-- Structural Placeholder Table -->
+              <!-- Authoritative Observations Table -->
               <div class="officer-table-wrapper">
                 <table class="officer-table">
                   <thead>
                     <tr>
-                      <th>Report ID</th>
-                      <th>Beat / Section</th>
-                      <th>Category</th>
+                      <th>Observation ID</th>
+                      <th>Canonical Record ID</th>
+                      <th>Zone / Station</th>
                       <th>Observed Value</th>
-                      <th>Timestamp</th>
-                      <th>Quality</th>
+                      <th>Governance Ruling</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td class="mono bold text-emerald">REP-2026-BHW-001</td>
-                      <td>Kopar Beat (Diva Sec)</td>
-                      <td>Precipitation / Gauge</td>
-                      <td>0.1 mm (Controlled)</td>
-                      <td class="mono">2026-08-25 11:00</td>
-                      <td><span class="nav-badge live">Verified</span></td>
+                      <td class="mono bold text-emerald" id="officerTableLiveObsId">DATA SOURCE PENDING INGESTION</td>
+                      <td class="mono text-muted" id="officerLiveCanonicalId">DATA SOURCE PENDING INGESTION</td>
+                      <td>Thane Creek (TC-Z03)</td>
+                      <td id="officerLiveTableRowVal">DATA SOURCE PENDING INGESTION</td>
+                      <td><span class="nav-badge live">CONFIRMED LIVE</span></td>
                       <td>
-                        <span class="btn-action-disabled" title="No backend mutation endpoint connected">Review</span>
+                        <span class="btn-action-disabled" title="No backend review/approval mutation endpoint connected">Review</span>
                       </td>
                     </tr>
                     <tr>
-                      <td class="mono">REP-2026-BHW-002</td>
-                      <td>Mandal Beat (Diva Sec)</td>
-                      <td>Mangrove Health Check</td>
-                      <td>Canopy intact</td>
-                      <td class="mono">2026-08-24 16:30</td>
-                      <td><span class="nav-badge" style="background:var(--status-warn-bg);color:var(--status-warn)">Pending Upstream</span></td>
+                      <td class="mono">
+                        <div>SMR-Z01-EXT-SAMACHAR-OBS001</div>
+                        <div style="margin-top:2px;"><span class="badge-dev-sim" style="font-size:9px;padding:1px 5px;">DEV/TEST REFERENCE</span></div>
+                      </td>
+                      <td class="mono text-muted">CR-c3d2e7cc-3ddc-41d6-a85c-b782cf43801d</td>
+                      <td>Samachar News (SMR-Z01) <em style="font-size:10px;color:var(--text-muted);display:block;">(Historical Audit Fixture)</em></td>
+                      <td>News Report (Context Unverified)</td>
+                      <td><span class="nav-badge" style="background:var(--status-warn-bg);color:var(--status-warn)">GOVERNED ABSTENTION</span></td>
                       <td>
-                        <span class="btn-action-disabled" title="No backend mutation endpoint connected">Review</span>
+                        <span class="btn-action-disabled" title="No backend review/approval mutation endpoint connected">Inspect</span>
                       </td>
                     </tr>
                   </tbody>
@@ -784,46 +789,54 @@
               </div>
               <div class="panel-footer-notice">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                <span>Officer review mutations require connected backend ingest runtime. Action buttons in Step 2 represent structural layout only.</span>
+                <span>DEV SIMULATION ONLY — Officer review &amp; approval mutations require an authoritative backend ingest endpoint. No server mutations are executed.</span>
               </div>
             </div>
 
           </div>
 
-          <!-- Column 2: Tactical Divisional Alerts Stream -->
+          <!-- Column 2: Tactical Divisional Exceptions & Diagnostics -->
           <div class="officer-col-side">
             <div class="officer-panel-card">
               <div class="panel-card-header">
                 <div class="panel-title-group">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                  <h3>Divisional Alert Command</h3>
+                  <h3>Divisional Exceptions &amp; Diagnostics</h3>
                 </div>
-                <span class="nav-badge alert-badge">2 Active</span>
+                <span class="nav-badge alert-badge">2 Verified Gaps</span>
               </div>
 
               <div class="officer-alerts-stream">
                 <div class="officer-alert-card warn">
                   <div class="alert-top">
                     <span class="alert-cat">UNPERSISTED UPSTREAM REGION</span>
-                    <span class="alert-time">Active</span>
+                    <span class="alert-time">Group 1 Gap</span>
                   </div>
-                  <div class="alert-desc">Vasai monitoring zone unpersisted in Group 1 runtime (HTTP 500).</div>
+                  <div class="alert-desc">Vasai monitoring zone (VS-Z01) unpersisted in Group 1 runtime (HTTP 500 / 404). Fail-closed status active.</div>
                   <div class="alert-foot">
                     <span class="mono">Zone: VS-Z01</span>
-                    <span class="btn-action-disabled">Acknowledge</span>
+                    <span class="btn-action-disabled" title="No backend mutation endpoint connected">Acknowledge</span>
                   </div>
                 </div>
 
                 <div class="officer-alert-card warn">
                   <div class="alert-top">
-                    <span class="alert-cat">GOVERNED ABSTENTION</span>
-                    <span class="alert-time">Enforced</span>
+                    <span class="alert-cat">GOVERNED ABSTENTION (DEV/TEST REFERENCE)</span>
+                    <span class="alert-time">Group 4 Gate</span>
                   </div>
-                  <div class="alert-desc">Context unverified for SAMACHAR observation SMR-Z01. Governed abstention active.</div>
+                  <div class="alert-desc">Historical test fixture: Context unverified for SAMACHAR observation SMR-Z01 (CONTEXT_NOT_VERIFIED). Decision action: noop.</div>
                   <div class="alert-foot">
-                    <span class="mono">Zone: SMR-Z01</span>
-                    <span class="btn-action-disabled">Inspect</span>
+                    <span class="mono">Zone: SMR-Z01 (DEV/TEST)</span>
+                    <span class="btn-action-disabled" title="No backend mutation endpoint connected">Inspect</span>
                   </div>
+                </div>
+              </div>
+
+              <!-- Factual Operational Diagnostics Panel (Zero Invented SOPs) -->
+              <div class="panel-footer-notice" style="border-top:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
+                <div class="mono bold text-emerald" style="font-size:10px;">OPERATIONAL RUNTIME DIAGNOSTIC</div>
+                <div style="font-size:11px;color:var(--text-secondary);line-height:1.35;">
+                  All operational decisions remain governed under fail-closed doctrine. Unverified data streams do not trigger downstream autonomous execution.
                 </div>
               </div>
 
@@ -1066,5 +1079,6 @@
 <script src="admin-auth.js"></script>
 <script src="geospatial.js"></script>
 <script src="app.js"></script>
+<script src="officer-desk.js"></script>
 </body>
 </html>
